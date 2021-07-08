@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:green_pouch/appbar.dart';
 import 'package:green_pouch/favourites/view.dart';
 import 'package:green_pouch/information/view.dart';
 import 'package:green_pouch/my_colours.dart';
@@ -23,27 +24,40 @@ class _HomeViewState extends State<HomeView> {
     ProfileView(),
   ];
 
+  Widget buildAppBar(int index) {
+    switch (index) {
+      case 0:
+        return MyAppBar(
+            title: "Hello Anny,",
+            subtitle: "Let's save the earth today!",
+            backgroundText: "Home");
+      case 1:
+        return MyAppBar(title: "Shopping", backgroundText: "Shopping");
+      case 2:
+        return MyAppBar(title: "Articles", backgroundText: "Articles");
+      default:
+        return MyAppBar(title: "Profile", backgroundText: "Profile");
+    }
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  PreferredSizeWidget _buildAppBar(int index) {
-    return AppBar(
-      title: const Text(
-        'GreenPouch',
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(_selectedIndex),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Stack(
+        children: [
+          buildAppBar(_selectedIndex),
+          Positioned(
+            child: Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
