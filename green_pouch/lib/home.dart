@@ -5,14 +5,14 @@ import 'package:green_pouch/my_colours.dart';
 import 'package:green_pouch/profile/view.dart';
 import 'package:green_pouch/search/view.dart';
 
-class MyNavBar extends StatefulWidget {
-  const MyNavBar({Key? key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
-  State<MyNavBar> createState() => _MyNavBarState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _MyNavBarState extends State<MyNavBar> {
+class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -29,12 +29,19 @@ class _MyNavBarState extends State<MyNavBar> {
     });
   }
 
+  PreferredSizeWidget _buildAppBar(int index) {
+    return AppBar(
+      title: const Text(
+        'GreenPouch',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('GreenPouch'),
-      ),
+      appBar: _buildAppBar(_selectedIndex),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

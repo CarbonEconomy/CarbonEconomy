@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:green_pouch/home.dart';
 import 'package:green_pouch/my_colours.dart';
-import 'package:green_pouch/navbar.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,6 +15,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: MyColours.PRIMARY,
         ),
-        home: MyNavBar());
+        home: HomeView());
   }
 }
