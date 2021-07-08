@@ -40,6 +40,63 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Widget buildSearchBar() {
+    return Positioned(
+      top: 150,
+      left: 0.0,
+      right: 0.0,
+      child: Padding(
+        padding: EdgeInsets.only(left: 23, right: 23),
+        child: SizedBox(
+          height: 50,
+          child: Container(
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(
+                  color: Color.fromRGBO(182, 182, 182, 0.15),
+                  offset: Offset(3, 5),
+                  blurRadius: 20.0,
+                  spreadRadius: 0.0)
+            ], borderRadius: BorderRadius.circular(30.0)),
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide(
+                      width: 0,
+                      style: BorderStyle.none,
+                    )),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.all(16),
+                hintText: "Search",
+                hintStyle: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildBody() {
+    return Positioned(
+      top: 172.0,
+      child: _widgetOptions[_selectedIndex],
+    );
+  }
+
+  List<Widget> buildStackChildren(int index) {
+    List<Widget> widgets = [buildAppBar(index)];
+
+    if (index < 3) {
+      widgets.add(buildSearchBar());
+    }
+
+    widgets.add(buildBody());
+    return widgets;
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -49,15 +106,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          buildAppBar(_selectedIndex),
-          Positioned(
-            child: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
-          )
-        ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(children: buildStackChildren(_selectedIndex)),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
