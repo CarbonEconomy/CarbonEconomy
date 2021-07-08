@@ -15,9 +15,10 @@ class Box extends StatelessWidget {
           borderRadius: BorderRadius.circular(3),
           boxShadow: [
             BoxShadow(
-              color: Colors.white.withAlpha(60),
-              offset: Offset(0.0, 1.0),
-              blurRadius: 6.0,
+              color: Color(0xFF33E49B).withAlpha(60).withOpacity(0.7),
+              offset: Offset(4, 4),
+              blurRadius: 20.0,
+              spreadRadius: 0,
             )
           ]),
       child: Column(
@@ -30,7 +31,7 @@ class Box extends StatelessWidget {
           ),
           Text(
             'DONATE',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
       ),
