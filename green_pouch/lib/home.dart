@@ -81,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget buildBody() {
     return Positioned(
-      top: 172.0,
+      top: 205.0,
       child: _widgetOptions[_selectedIndex],
     );
   }
