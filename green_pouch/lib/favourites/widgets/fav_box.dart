@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:green_pouch/my_colours.dart';
 
@@ -23,29 +21,30 @@ class BoxListState extends State<BoxList> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ToggleBox(
-            icon: Icons.favorite,
-            text: 'DONATE',
-            selected: index == 0,
-            onTap: createOnTapFn(0)),
-        SizedBox(width: 22),
-        ToggleBox(
-          icon: Icons.attach_money,
-          text: 'SHOPPING',
-          selected: index == 1,
-          onTap: createOnTapFn(1),
-        ),
-        SizedBox(width: 22),
-        ToggleBox(
-          icon: Icons.fastfood,
-          text: 'FOOD',
-          selected: index == 2,
-          onTap: createOnTapFn(2),
-        ),
-      ],
-    );
+    return Container(
+        width: MediaQuery.of(context).size.width - 30,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ToggleBox(
+                icon: Icons.favorite,
+                text: 'DONATE',
+                selected: index == 0,
+                onTap: createOnTapFn(0)),
+            ToggleBox(
+              icon: Icons.attach_money,
+              text: 'SHOPPING',
+              selected: index == 1,
+              onTap: createOnTapFn(1),
+            ),
+            ToggleBox(
+              icon: Icons.fastfood,
+              text: 'FOOD',
+              selected: index == 2,
+              onTap: createOnTapFn(2),
+            ),
+          ],
+        ));
   }
 }
 
