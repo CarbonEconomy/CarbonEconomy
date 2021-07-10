@@ -106,6 +106,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MyColours.BACKGROUND,
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: Stack(children: buildStackChildren(_selectedIndex)),
