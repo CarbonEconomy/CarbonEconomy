@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:green_pouch/favourites/widgets/fav_box.dart';
 
-
 class FavouritesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -12,7 +11,7 @@ class FavouritesView extends StatelessWidget {
           Container(
             height: 20,
           ),
-          Box(),
+          BoxList(),
         ],
       ),
     );
