@@ -10,6 +10,8 @@ api = Api(app)
 ors_key = os.environ.get('ORS_KEY')
 CORS(app)
 
+rewards = { 5: 20, 6: 30, 7: 45 }
+
 def get_location_from_postcode(postcode):
     payload = {'searchVal': postcode, 'returnGeom': 'Y', 'getAddrDetails':'N'}
     r = requests.get('https://developers.onemap.sg/commonapi/search', params=payload)
@@ -47,8 +49,31 @@ class Emissions(Resource):
         emissions = 5 * distance
         return { 'distance': distance, 'emissions': emissions }
 
+class Rewards(Resource):
+    def get(self, user_id):
+        return { user_id: rewards[user_id] }
+
+    def put(self, user_id):
+        args = request.args
+        to_add = args['to_add']
+        rewards[user_id] += int(to_add)
+        return rewards
+
+class RewardList(Resource):
+    def get(self):
+        return rewards
+
+    def post(self):
+        args = request.args
+        user_id = int(max(rewards.keys())) + 1
+        rewards[user_id] = int(args['init_val'])
+        return rewards
+
+
 api.add_resource(Distance, '/api/distance')
 api.add_resource(Emissions, '/api/emissions')
+api.add_resource(RewardList, '/api/rewards')
+api.add_resource(Rewards, '/api/rewards/<int:user_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
