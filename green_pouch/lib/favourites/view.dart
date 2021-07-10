@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:green_pouch/widgets/favBox.dart';
+import 'package:green_pouch/favourites/widgets/fav_box.dart';
+
 
 class FavouritesView extends StatelessWidget {
   @override
