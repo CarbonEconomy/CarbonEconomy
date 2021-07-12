@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import Resource, Api, request
 from flask_cors import CORS
 import requests
-from requests.api import post
 import os
 
 app = Flask(__name__)
@@ -22,15 +21,23 @@ def get_location_from_postcode(postcode):
     return "{0}, {1}".format(results['LONGITUDE'], results['LATITUDE'])
 
 # Get distance from postcodes
+# TODO handle cases where no routes found
 def get_distance(start, end):
-    start_coord = get_location_from_postcode(start)
-    end_coord = get_location_from_postcode(end)
-    payload = {'api_key': ors_key, 'start': start_coord, 'end': end_coord}
+    if (start == end):
+        return 0
+
+    payload = {'api_key': ors_key, 'start': start, 'end': end}
     r = requests.get('https://api.openrouteservice.org/v2/directions/driving-car', params=payload)
     r.raise_for_status()
 
     distance = r.json()['features'][0]['properties']['summary']['distance']
     return distance
+
+class Location(Resource):
+    def get(self):
+        args = request.args
+        location = args['location']
+        return get_location_from_postcode(location)
 
 class Distance(Resource):
     def get(self):
@@ -72,6 +79,7 @@ class RewardList(Resource):
 
 api.add_resource(Distance, '/api/distance')
 api.add_resource(Emissions, '/api/emissions')
+api.add_resource(Location, '/api/location')
 api.add_resource(RewardList, '/api/rewards')
 api.add_resource(Rewards, '/api/rewards/<int:user_id>')
 
