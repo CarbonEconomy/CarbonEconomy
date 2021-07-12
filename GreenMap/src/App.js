@@ -3,46 +3,39 @@ import DeckGL, { MapController } from "deck.gl";
 import { renderLayers } from "./utils/RenderLayers";
 
 import { csv } from "d3-fetch";
+import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
 const DATA_URL = "./heatmap-data.csv";
 
 const App = () => {
     const [data, setData] = useState({});
+    const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
+
+    async function fetchData(){
+        const result = await csv(DATA_URL);
+        const points = result.map(function (d) {
+            return { position: [+d.lng, +d.lat] };
+        });
+        setData(points);
+    }
+
+    const handleResize = () => {
+        setViewport((v) => {
+            return {
+                ...v,
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        });
+    };
 
     //loadfdata
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await csv(DATA_URL);
-            const points = result.map(function (d) {
-                return { position: [+d.lng, +d.lat] };
-            });
-            setData(points);
-        };
-
         fetchData();
     }, []);
 
-    const [viewport, setViewport] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
-        longitude: -3.2943888952729092,
-        latitude: 53.63605986631115,
-        zoom: 6,
-        maxZoom: 16,
-        pitch: 65,
-        bearing: 0
-    });
 
     //resize
     useEffect(() => {
-        const handleResize = () => {
-            setViewport((v) => {
-                return {
-                    ...v,
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                };
-            });
-        };
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -57,15 +50,6 @@ const App = () => {
                 controller={{ type: MapController, dragRotate: false }}
                 initialViewState={viewport}
             />
-            <div className="attribution">
-                <a
-                    href="https://maps.gsi.go.jp/development/ichiran.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    地理院タイル
-                </a>
-            </div>
         </div>
     );
 };
