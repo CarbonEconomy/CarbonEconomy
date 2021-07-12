@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:green_pouch/favourites/widgets/fav_box.dart';
+import 'package:green_pouch/favourites/widgets/food.dart';
 import 'package:green_pouch/favourites/widgets/shopping.dart';
 
 List<ShoppingReward> MOCK_SHOPPING_REWARDS = [
@@ -34,7 +35,8 @@ class FavouritesView extends StatelessWidget {
           VerticalPad(20),
           Title("Shopping"),
           VerticalPad(16.0),
-          ShoppingRewardsList(MOCK_SHOPPING_REWARDS)
+          ShoppingRewardsList(MOCK_SHOPPING_REWARDS),
+          foodTile()
         ],
       ),
     );
