@@ -9,11 +9,18 @@ api = Api(app)
 ors_key = os.environ.get('ORS_KEY')
 CORS(app)
 
-rewards = { 5: 20, 6: 30, 7: 45 }
+rewards = {5: 20, 6: 30, 7: 45}
+emissions = {"CAR": {
+    "ELECTRIC": 500,
+    "DIESEL": 1000,
+    "GASOLINE": 750
+}}
+
 
 def get_location_from_postcode(postcode):
-    payload = {'searchVal': postcode, 'returnGeom': 'Y', 'getAddrDetails':'N'}
-    r = requests.get('https://developers.onemap.sg/commonapi/search', params=payload)
+    payload = {'searchVal': postcode, 'returnGeom': 'Y', 'getAddrDetails': 'N'}
+    r = requests.get(
+        'https://developers.onemap.sg/commonapi/search', params=payload)
     r.raise_for_status()
 
     json = r.json()
@@ -27,17 +34,24 @@ def get_distance(start, end):
         return 0
 
     payload = {'api_key': ors_key, 'start': start, 'end': end}
-    r = requests.get('https://api.openrouteservice.org/v2/directions/driving-car', params=payload)
+    r = requests.get(
+        'https://api.openrouteservice.org/v2/directions/driving-car', params=payload)
     r.raise_for_status()
 
     distance = r.json()['features'][0]['properties']['summary']['distance']
     return distance
+
+
+def get_emissions(vehicle, type):
+    return emissions[vehicle][type]
+
 
 class Location(Resource):
     def get(self):
         args = request.args
         location = args['location']
         return get_location_from_postcode(location)
+
 
 class Distance(Resource):
     def get(self):
@@ -46,25 +60,29 @@ class Distance(Resource):
         end = args['end']
         return {'distance': get_distance(start, end)}
 
-class Emissions(Resource):
+
+class LocalEmissions(Resource):
     def get(self):
         args = request.args
         start = args['start']
         end = args['end']
+        vehicle = args['vehicle']
         type = args['type']
         distance = get_distance(start, end)
-        emissions = 5 * distance
-        return { 'distance': distance, 'emissions': emissions }
+        emissions = get_emissions(vehicle, type) * distance
+        return {'distance': distance, 'emissions': emissions}
+
 
 class Rewards(Resource):
     def get(self, user_id):
-        return { user_id: rewards[user_id] }
+        return {user_id: rewards[user_id]}
 
     def put(self, user_id):
         args = request.args
         to_add = args['to_add']
         rewards[user_id] += int(to_add)
         return rewards
+
 
 class RewardList(Resource):
     def get(self):
@@ -78,7 +96,7 @@ class RewardList(Resource):
 
 
 api.add_resource(Distance, '/api/distance')
-api.add_resource(Emissions, '/api/emissions')
+api.add_resource(LocalEmissions, '/api/localemissions')
 api.add_resource(Location, '/api/location')
 api.add_resource(RewardList, '/api/rewards')
 api.add_resource(Rewards, '/api/rewards/<int:user_id>')
