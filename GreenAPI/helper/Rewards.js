@@ -303,8 +303,7 @@ const createTransaction = async (from, to, amount) => {
 // };
 
 module.exports = {
-  createTransaction,
-  test,
+  createTransaction
   // updateLicence,
   // getLicence,
   // updateContact,

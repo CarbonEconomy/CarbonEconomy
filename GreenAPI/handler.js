@@ -1,11 +1,11 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
-const { createTransaction, test } = require('./helper/Rewards');
-// const rewards = require('./routes/rewards.routes')
+const { createTransaction } = require('./helper/Rewards');
+const rewards = require('./routes/rewards.routes')
 
-// app.use(express.urlencoded({ extended: true }))
-// app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
@@ -22,7 +22,7 @@ app.get("/hello", (req, res, next) => {
 app.post("/transaction", async (req, res, next) => {
   const {
     to, from, amount,
-  } = JSON.parse(req.body);
+  } = req.body;
 
   try {
     const response = await createTransaction(to, from, amount);
@@ -39,7 +39,7 @@ app.post("/transaction", async (req, res, next) => {
   }
 });
 
-// app.use('/', rewards)
+app.use('/', rewards)
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Not Found",
