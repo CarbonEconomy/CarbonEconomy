@@ -1,3 +1,7 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:green_pouch/appbar.dart';
 import 'package:green_pouch/favourites/view.dart';
@@ -5,6 +9,10 @@ import 'package:green_pouch/information/view.dart';
 import 'package:green_pouch/my_colours.dart';
 import 'package:green_pouch/profile/view.dart';
 import 'package:green_pouch/search/view.dart';
+
+import 'amplifyconfiguration.dart';
+import 'models/ModelProvider.dart';
+import 'models/Reward.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -15,14 +23,70 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    FavouritesView(),
-    SearchView(),
-    InformationView(),
-    ProfileView(),
-  ];
+  bool _isLoading = true;
+
+  List<Reward> _rewards = [];
+
+  final AmplifyDataStore _dataStorePlugin =
+      AmplifyDataStore(modelProvider: ModelProvider.instance);
+
+  final AmplifyAPI _apiPlugin = AmplifyAPI();
+
+  final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
+
+  @override
+  void initState() {
+    _initializeApp();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // to be filled in a later step
+    super.dispose();
+  }
+
+  Future<void> _initializeApp() async {
+    // configure Amplify
+    if (!Amplify.isConfigured) {
+      await _configureAmplify();
+    }
+
+    await _fetchRewards();
+
+    // after configuring Amplify, update loading ui state to loaded state
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _configureAmplify() async {
+    try {
+      // add Amplify plugins
+      await Amplify.addPlugins([_dataStorePlugin, _apiPlugin, _authPlugin]);
+
+      // configure Amplify
+      //
+      // note that Amplify cannot be configured more than once!
+      await Amplify.configure(amplifyconfig);
+    } catch (e) {
+      // error handling can be improved for sure!
+      // but this will be sufficient for the purposes of this tutorial
+      print('An error occurred while configuring Amplify: $e');
+    }
+  }
+
+  Future<void> _fetchRewards() async {
+    try {
+      List<Reward> updatedTodos =
+          await Amplify.DataStore.query(Reward.classType);
+      setState(() {
+        _rewards = updatedTodos;
+      });
+    } catch (e) {
+      print('An error occurred while querying Rewards: $e');
+    }
+  }
 
   Widget buildAppBar(int index) {
     switch (index) {
@@ -80,9 +144,24 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget buildBody() {
+    Widget child = FavouritesView();
+
+    switch (_selectedIndex) {
+      case 0:
+        child = FavouritesView();
+        break;
+      case 1:
+        child = SearchView(_rewards);
+        break;
+      case 2:
+        child = InformationView();
+        break;
+      case 3:
+        child = ProfileView();
+    }
     return Positioned(
       top: 205.0,
-      child: _widgetOptions[_selectedIndex],
+      child: child,
     );
   }
 
@@ -105,41 +184,45 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColours.BACKGROUND,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(children: buildStackChildren(_selectedIndex)),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Favourites',
-            backgroundColor: MyColours.PRIMARY,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.saved_search),
-            label: 'Search',
-            backgroundColor: MyColours.PRIMARY,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Information',
-            backgroundColor: MyColours.PRIMARY,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile',
-            backgroundColor: MyColours.PRIMARY,
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        backgroundColor: MyColours.PRIMARY,
-        unselectedItemColor: Colors.black,
-        onTap: _onItemTapped,
-      ),
-    );
+    return _isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Scaffold(
+            backgroundColor: MyColours.BACKGROUND,
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(children: buildStackChildren(_selectedIndex)),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Favourites',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.saved_search),
+                  label: 'Search',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.school),
+                  label: 'Information',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: 'Profile',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              backgroundColor: MyColours.PRIMARY,
+              unselectedItemColor: Colors.black,
+              onTap: _onItemTapped,
+            ),
+          );
   }
 }
