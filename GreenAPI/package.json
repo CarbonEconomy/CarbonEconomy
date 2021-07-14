@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "amazon-qldb-driver-nodejs": "^2.2.0",
+    "aws-sdk": "^2.945.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "ion-js": "^4.0.0",
+    "jsbi": "^3.1.2",
     "serverless-http": "^2.7.0"
+  },
+  "devDependencies": {
+    "serverless": "^2.51.2",
+    "serverless-offline": "^7.0.0"
   }
 }
