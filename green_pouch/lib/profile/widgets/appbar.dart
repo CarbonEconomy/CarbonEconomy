@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import '../../my_colours.dart';
 
 class ProfileAppBar extends StatelessWidget {
-  String title;
-  String? backgroundText;
-  String? subtitle;
+  String name;
+  int treesDonated;
+  int credits;
 
   static const Color _translucentWhite = Color.fromRGBO(255, 255, 255, 0.15);
-  ProfileAppBar({required this.title, this.subtitle, this.backgroundText});
+  ProfileAppBar(
+      {required this.name, required this.treesDonated, required this.credits});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 172.0,
+      height: 232.0,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
@@ -28,9 +29,9 @@ class ProfileAppBar extends StatelessWidget {
                 ])),
           ),
           Positioned(
-            height: 204,
-            width: 204,
-            right: -86,
+            height: 293,
+            width: 293,
+            right: -36,
             top: -80,
             child: Container(
               decoration: BoxDecoration(
@@ -38,57 +39,58 @@ class ProfileAppBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            height: 124,
-            width: 124,
+            height: 179,
+            width: 179,
             right: -62,
-            bottom: -20,
+            bottom: -100,
             child: Container(
               decoration: BoxDecoration(
                   shape: BoxShape.circle, color: _translucentWhite),
             ),
           ),
-          Positioned(
-            right: 5,
-            bottom: 5,
-            child: Container(
-              child: Text(
-                backgroundText ?? "",
-                style: TextStyle(
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: AssetImage("graphics/cat.jpg"),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: _translucentWhite),
-              ),
+                    fontSize: 23,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage("graphics/flower.png"),
+                      height: 24,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "$treesDonated Trees available",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
-          Positioned(
-            top: 72,
-            left: 20,
-            child: Container(
-              width: MediaQuery.of(context).size.width - 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 21,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        subtitle ?? "",
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      )
-                    ],
-                  ),
-                  CircleAvatar(backgroundImage: AssetImage("graphics/cat.jpg")),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );

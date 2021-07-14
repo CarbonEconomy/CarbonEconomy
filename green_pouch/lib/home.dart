@@ -101,7 +101,11 @@ class _HomeViewState extends State<HomeView> {
       case 2:
         return MyAppBar(title: "Articles", backgroundText: "Articles");
       default:
-        return ProfileAppBar(title: "Profile", backgroundText: "Profile");
+        return ProfileAppBar(
+          name: "Anny Boi",
+          treesDonated: 10649,
+          credits: 465,
+        );
     }
   }
 
@@ -145,7 +149,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget buildBody(BuildContext context) {
-    var height = MediaQuery.of(context).size.height - 255;
+    var height = MediaQuery.of(context).size.height;
     switch (_selectedIndex) {
       case 0:
         return Positioned(
@@ -154,7 +158,7 @@ class _HomeViewState extends State<HomeView> {
             child: SingleChildScrollView(
               child: FavouritesView(),
             ),
-            constraints: BoxConstraints(maxHeight: height),
+            constraints: BoxConstraints(maxHeight: height - 255),
           ),
         );
       case 1:
@@ -164,7 +168,7 @@ class _HomeViewState extends State<HomeView> {
             child: SingleChildScrollView(
               child: SearchView(_rewards),
             ),
-            constraints: BoxConstraints(maxHeight: height),
+            constraints: BoxConstraints(maxHeight: height - 255),
           ),
         );
       case 2:
@@ -174,17 +178,17 @@ class _HomeViewState extends State<HomeView> {
             child: SingleChildScrollView(
               child: InformationView(),
             ),
-            constraints: BoxConstraints(maxHeight: height),
+            constraints: BoxConstraints(maxHeight: height - 255),
           ),
         );
       default:
         return Positioned(
-          top: 205.0,
+          top: 245.0,
           child: ConstrainedBox(
             child: SingleChildScrollView(
               child: ProfileView(),
             ),
-            constraints: BoxConstraints(maxHeight: height),
+            constraints: BoxConstraints(maxHeight: height - 295),
           ),
         );
     }
