@@ -6,21 +6,14 @@
 // const AWSXRay = require("aws-xray-sdk-core");
 // AWSXRay.captureAWS(require("aws-sdk"));
 const { getQldbDriver } = require("./ConnectToLedger");
-// const LicenceIntegrityError = require("../lib/LicenceIntegrityError");
-// const LicenceNotFoundError = require("../lib/LicenceNotFoundError");
 
 // Transactions for testing, probably not gonna use this
 
-/**
- * Insert the new transaction document to the Transaction table
- * @param txn The {@linkcode TransactionExecutor} for lambda execute.
- * @param transactionDoc The document containing the details to insert.
- * @returns The Result from executing the statement
- */
-async function createTransactionEntry(txn, transactionDoc) {
-  const statement = "INSERT INTO transactions ?";
-  return txn.execute(statement, transactionDoc);
-}
+const insertDocument = async (txn, tableName, document) => {
+  const statement = `INSERT INTO ${tableName} ?`;
+  let result = await txn.execute(statement, document);
+  return result;
+};
 
 /**
  * Creates a new Transaction record in the QLDB ledger.
@@ -32,7 +25,7 @@ async function createTransactionEntry(txn, transactionDoc) {
 const createTransaction = async (from, to, amount) => {
   let transaction;
   // Get a QLDB Driver instance
-  const qldbDriver = await getQldbDriver();
+  const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(
     async (txn) => {
       const transactionDoc = [
@@ -44,23 +37,16 @@ const createTransaction = async (from, to, amount) => {
       ];
 
       // Create the record. This returns the unique document ID in an array as the result set
-      const result = await createTransactionEntry(txn, transactionDoc);
+      const result = await insertDocument(txn, "test", transactionDoc);
       const docIdArray = result.getResultList();
       const docId = docIdArray[0].get("documentId").stringValue();
-      // Update the record to add the document ID as the GUID in the payload
-      // await addGuid(txn, docId, docId.toUpperCase(), email);
       transaction = {
-        // guid: docId,
         transactionId: docId.toUpperCase(),
         to,
         from,
       };
-
-      console.log(transaction);
-    },
-    () => Log.info("Retrying due to OCC conflict...")
+    }
   );
-  console.log("done");
   return transaction;
 };
 
@@ -318,6 +304,7 @@ const createTransaction = async (from, to, amount) => {
 
 module.exports = {
   createTransaction,
+  test,
   // updateLicence,
   // getLicence,
   // updateContact,

@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 /*
  * Helper utility from the Amazon DMV QLDB sample application for Nodejs.
  * This is used to get a QldbDriver - the entry point for all interactions
@@ -15,8 +13,10 @@ const { QldbDriver } = require('amazon-qldb-driver-nodejs');
  * @returns The driver for interacting with the specified ledger.
  */
 function createQldbDriver(
-  ledgerName = process.env.LEDGER_NAME,
-  serviceConfigurationOptions = {},
+  ledgerName = "CarbonEconomy",
+  serviceConfigurationOptions = {
+    region: "us-east-1"
+  },
 ) {
   const qldbDriver = new QldbDriver(ledgerName, serviceConfigurationOptions);
   return qldbDriver;

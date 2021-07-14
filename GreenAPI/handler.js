@@ -1,7 +1,7 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
-const { createTransaction } = require('./helper/Rewards');
+const { createTransaction, test } = require('./helper/Rewards');
 // const rewards = require('./routes/rewards.routes')
 
 // app.use(express.urlencoded({ extended: true }))
