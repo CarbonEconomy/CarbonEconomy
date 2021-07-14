@@ -21,7 +21,7 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
 };
 
-const INITIAL_VIEWPORT = {
+const INITIAL_VIEWPORT_ = {
     width: window.innerWidth,
     height: window.innerHeight,
     longitude: -3.2943888952729092,
@@ -31,7 +31,16 @@ const INITIAL_VIEWPORT = {
     pitch: 65,
     bearing: 0
 }
-
+const INITIAL_VIEWPORT = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    longitude: JURONG_HILL[1],
+    latitude: JURONG_HILL[0],
+    zoom: 6,
+    maxZoom: 16,
+    pitch: 65,
+    bearing: 0
+}
 // Data to be used by the LineLayer
 const data = [
     {sourcePosition: [1.3181935040627233, 103.70845164296772], targetPosition: [1.4030786091186036, 103.807320541631]}
