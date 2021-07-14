@@ -13,7 +13,6 @@ class RewardsList extends StatelessWidget {
     var size = MediaQuery.of(context).size;
 
     return Container(
-        height: size.height - 255,
         width: size.width,
         child: ListView.builder(
           scrollDirection: Axis.vertical,

@@ -8,6 +8,7 @@ import 'package:green_pouch/favourites/view.dart';
 import 'package:green_pouch/information/view.dart';
 import 'package:green_pouch/my_colours.dart';
 import 'package:green_pouch/profile/view.dart';
+import 'package:green_pouch/profile/widgets/appbar.dart';
 import 'package:green_pouch/search/view.dart';
 
 import 'amplifyconfiguration.dart';
@@ -100,7 +101,7 @@ class _HomeViewState extends State<HomeView> {
       case 2:
         return MyAppBar(title: "Articles", backgroundText: "Articles");
       default:
-        return MyAppBar(title: "Profile", backgroundText: "Profile");
+        return ProfileAppBar(title: "Profile", backgroundText: "Profile");
     }
   }
 
@@ -143,36 +144,60 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget buildBody() {
-    Widget child = FavouritesView();
-
+  Widget buildBody(BuildContext context) {
+    var height = MediaQuery.of(context).size.height - 255;
     switch (_selectedIndex) {
       case 0:
-        child = FavouritesView();
-        break;
+        return Positioned(
+          top: 205.0,
+          child: ConstrainedBox(
+            child: SingleChildScrollView(
+              child: FavouritesView(),
+            ),
+            constraints: BoxConstraints(maxHeight: height),
+          ),
+        );
       case 1:
-        child = SearchView(_rewards);
-        break;
+        return Positioned(
+          top: 205.0,
+          child: ConstrainedBox(
+            child: SingleChildScrollView(
+              child: SearchView(_rewards),
+            ),
+            constraints: BoxConstraints(maxHeight: height),
+          ),
+        );
       case 2:
-        child = InformationView();
-        break;
-      case 3:
-        child = ProfileView();
+        return Positioned(
+          top: 205.0,
+          child: ConstrainedBox(
+            child: SingleChildScrollView(
+              child: InformationView(),
+            ),
+            constraints: BoxConstraints(maxHeight: height),
+          ),
+        );
+      default:
+        return Positioned(
+          top: 205.0,
+          child: ConstrainedBox(
+            child: SingleChildScrollView(
+              child: ProfileView(),
+            ),
+            constraints: BoxConstraints(maxHeight: height),
+          ),
+        );
     }
-    return Positioned(
-      top: 205.0,
-      child: child,
-    );
   }
 
-  List<Widget> buildStackChildren(int index) {
+  List<Widget> buildStackChildren(int index, BuildContext context) {
     List<Widget> widgets = [buildAppBar(index)];
 
     if (index < 3) {
       widgets.add(buildSearchBar());
     }
 
-    widgets.add(buildBody());
+    widgets.add(buildBody(context));
     return widgets;
   }
 
@@ -192,7 +217,8 @@ class _HomeViewState extends State<HomeView> {
             backgroundColor: MyColours.BACKGROUND,
             body: Container(
               height: MediaQuery.of(context).size.height,
-              child: Stack(children: buildStackChildren(_selectedIndex)),
+              child:
+                  Stack(children: buildStackChildren(_selectedIndex, context)),
             ),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
