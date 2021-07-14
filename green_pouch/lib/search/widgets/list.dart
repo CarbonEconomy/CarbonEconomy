@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:green_pouch/models/Reward.dart';
 import 'package:green_pouch/my_colours.dart';
-import 'package:green_pouch/search/reward.dart';
 
 class RewardsList extends StatelessWidget {
   List<Reward> rewards;

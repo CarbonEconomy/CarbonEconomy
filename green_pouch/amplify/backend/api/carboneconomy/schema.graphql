@@ -1,0 +1,7 @@
+type Reward @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  pictureUrl: String!
+  organisation: String!
+  treesRequired: Int
+}
