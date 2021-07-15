@@ -6,7 +6,7 @@ import {StaticMap}from "react-map-gl"
 import { csv } from "d3-fetch";
 import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
 import {JURONG_HILL_} from "./utils/MapUtils/SingaporeLocations";
-import {fetchData} from "./dataLoaders/LocationsLoader"
+import {fetchCsvData, fetchData} from "./dataLoaders/LocationsLoader"
 import {generateRandomGreenCredits} from "./utils/MockDataUtils/MockData";
 
 // const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_DEFAULT_PUBLIC_TOKEN
@@ -28,7 +28,7 @@ function getTooltip({object}) {
 }
 
 const App = () => {
-    const [data, setData] = useState({});
+    const [data, setData] = useState(null);
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
     const [mockCredits, setMockCredits] = useState([])
 
@@ -42,23 +42,22 @@ const App = () => {
         });
     };
 
-    async function generateMockCredits() {
-        let credits = await generateRandomGreenCredits(10)
+    async function generateMockCredits(data) {
+        let credits = generateRandomGreenCredits(data,1000)
         console.log("XX testing Credit Creation:", credits)
         setMockCredits(credits)
     }
 
+    async function fetchData(){
+        let data = await fetchCsvData()
+        setData(data)
+        setMockCredits(await generateMockCredits(data))
+    }
+
     //loadfdata
     useEffect(() => {
-        fetchData(setData);
+        fetchData()
     }, []);
-
-    useEffect(()=> {
-        generateMockCredits()
-    }, [])
-
-
-
 
     //resize
     useEffect(() => {
