@@ -15,6 +15,18 @@ const insertDocument = async (txn, tableName, document) => {
   return result;
 };
 
+const findAllFrom = async (txn, tableName, fromID) => {
+  const statement = `SELECT * FROM ${tableName} AS gt WHERE gt.fromID = ?`
+  let result = await txn.execute(statement, parseInt(fromID));
+  return result;
+}
+
+const findAllTo = async (txn, tableName, toID) => {
+  const statement = `SELECT * FROM ${tableName} AS gt WHERE gt.toID = ?`
+  let result = await txn.execute(statement, parseInt(toID));
+  return result;
+}
+
 /**
  * Creates a new Transaction record in the QLDB ledger.
  * @param from The name of the licence holder.
@@ -50,6 +62,40 @@ const createTransaction = async (fromID, toID, amount, description) => {
   );
   return transaction;
 };
+
+const getTransactionFrom = async (fromID) => {
+  let transaction;
+
+  const qldbDriver = getQldbDriver();
+  await qldbDriver.executeLambda(
+    async (txn) => {
+      const result = await findAllFrom(txn, "GreenTransaction", fromID);
+      resultList = result.getResultList();
+
+      if (resultList.length != 0) {
+        transaction = JSON.stringify(resultList);
+      }
+    }
+  );
+  return transaction
+}
+
+const getTransactionTo = async (toID) => {
+  let transaction;
+
+  const qldbDriver = getQldbDriver();
+  await qldbDriver.executeLambda(
+    async (txn) => {
+      const result = await findAllFrom(txn, "GreenTransaction", toID);
+      resultList = result.getResultList();
+
+      if (resultList.length != 0) {
+        transaction = JSON.stringify(resultList);
+      }
+    }
+  );
+  return transaction
+}
 
 // /**
 //  * Helper function to get the latest revision of document by email address
@@ -304,7 +350,9 @@ const createTransaction = async (fromID, toID, amount, description) => {
 // };
 
 module.exports = {
-  createTransaction
+  createTransaction,
+  getTransactionFrom,
+  getTransactionTo
   // updateLicence,
   // getLicence,
   // updateContact,
