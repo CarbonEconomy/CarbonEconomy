@@ -3,27 +3,20 @@ import 'package:green_pouch/login/signup.dart';
 
 import 'login.dart';
 
-typedef Future<void> LoginFunction(String username, String password);
-typedef Future<void> SignUpFunction(
-    String email, String username, String password);
-
 class LoginView extends StatefulWidget {
-  LoginFunction login;
-  SignUpFunction signUp;
+  Function() loginUser;
 
-  LoginView({required this.login, required this.signUp});
+  LoginView(this.loginUser);
 
   @override
-  State<StatefulWidget> createState() => LoginViewState(login, signUp);
+  State<StatefulWidget> createState() => LoginViewState(loginUser);
 }
 
 class LoginViewState extends State<LoginView> {
-  LoginFunction login;
-  SignUpFunction signUp;
-
+  Function() loginUser;
   bool showLogin = true;
 
-  LoginViewState(this.login, this.signUp);
+  LoginViewState(this.loginUser);
 
   void showLoginScreen() {
     setState(() {
@@ -40,9 +33,7 @@ class LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return showLogin
-        ? LoginScreen(login, showSignUpScreen)
-        : SignUpScreen(signUp, showLoginScreen);
-
-        
+        ? LoginScreen(loginUser, showSignUpScreen)
+        : SignUpScreen(loginUser, showLoginScreen);
   }
 }

@@ -1,7 +1,7 @@
 {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "carboneefabc0e",
+    "resourceNameTruncated": "carbon43d75e31",
     "userPoolName": "carboneconomy",
     "autoVerifiedAttributes": [
         "email"
@@ -23,15 +23,16 @@
         "Requires Uppercase"
     ],
     "requiredAttributes": [
+        "preferred_username",
         "email"
     ],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "carboneefabc0e_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "carbon43d75e31_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "eefabc0e",
+    "sharedId": "43d75e31",
     "resourceName": "carboneconomy",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
@@ -47,9 +48,6 @@
         ]
     },
     "serviceName": "Cognito",
-    "usernameAttributes": [
-        "email"
-    ],
     "useDefault": "manual",
     "userPoolGroups": false,
     "userPoolGroupList": [],

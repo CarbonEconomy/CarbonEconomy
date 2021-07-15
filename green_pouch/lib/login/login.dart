@@ -1,31 +1,40 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:green_pouch/login/view.dart';
 import 'package:green_pouch/my_colours.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginFunction login;
+  Function() loginUser;
   Function() switchToSignUp;
 
-  LoginScreen(this.login, this.switchToSignUp);
+  LoginScreen(this.loginUser, this.switchToSignUp);
 
   @override
   State<StatefulWidget> createState() {
-    return LoginScreenState(login, switchToSignUp);
+    return LoginScreenState(loginUser, switchToSignUp);
   }
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  LoginFunction login;
+  Function() loginUser;
   Function() switchToSignUp;
   final myControllerPass = TextEditingController();
   final myControllerUser = TextEditingController();
 
-  LoginScreenState(this.login, this.switchToSignUp);
+  LoginScreenState(this.loginUser, this.switchToSignUp);
 
   void onLogin() async {
-    await login("${myControllerUser.text.toString()}",
-        "${myControllerPass.text.toString()}");
+    try {
+      SignInResult res = await Amplify.Auth.signIn(
+        username: myControllerUser.text.trim(),
+        password: myControllerPass.text.trim(),
+      );
+
+      loginUser();
+    } on AuthException catch (e) {
+      print(e.message);
+    }
   }
 
   @override

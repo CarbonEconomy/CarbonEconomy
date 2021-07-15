@@ -14,7 +14,6 @@ import 'package:green_pouch/search/view.dart';
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
-import 'models/Reward.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -28,14 +27,14 @@ class _HomeViewState extends State<HomeView> {
   bool _isLoading = true;
   bool _isLoggedIn = false;
 
+  AuthUser? _user;
+
   List<Reward> _rewards = [];
 
-  final AmplifyDataStore _dataStorePlugin =
+  final _amplifyApi = AmplifyAPI();
+  final _amplifyDataStore =
       AmplifyDataStore(modelProvider: ModelProvider.instance);
-
-  final AmplifyAPI _apiPlugin = AmplifyAPI();
-
-  final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
+  final _amplifyAuth = AmplifyAuthCognito();
 
   @override
   void initState() {
@@ -51,8 +50,15 @@ class _HomeViewState extends State<HomeView> {
 
   Future<void> _initializeApp() async {
     // configure Amplify
+
     if (!Amplify.isConfigured) {
       await _configureAmplify();
+    }
+
+    var session = await Amplify.Auth.fetchAuthSession();
+
+    if (session.isSignedIn) {
+      await _getUser();
     }
 
     await _fetchRewards();
@@ -60,18 +66,22 @@ class _HomeViewState extends State<HomeView> {
     // after configuring Amplify, update loading ui state to loaded state
     setState(() {
       _isLoading = false;
+      _isLoggedIn = session.isSignedIn;
+    });
+  }
+
+  Future<void> _getUser() async {
+    var user = await Amplify.Auth.getCurrentUser();
+    setState(() {
+      this._user = user;
     });
   }
 
   Future<void> _configureAmplify() async {
     try {
-      // add Amplify plugins
-      await Amplify.addPlugins([_dataStorePlugin, _apiPlugin, _authPlugin]);
-
-      // configure Amplify
-      //
-      // note that Amplify cannot be configured more than once!
+      await Amplify.addPlugins([_amplifyDataStore, _amplifyApi, _amplifyAuth]);
       await Amplify.configure(amplifyconfig);
+      print("Amplify is configured: ${Amplify.isConfigured}");
     } catch (e) {
       // error handling can be improved for sure!
       // but this will be sufficient for the purposes of this tutorial
@@ -91,25 +101,18 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> _login(String username, String password) async {
-    print("$username logged in with $password");
-    // setState(() {
-    //   this._isLoggedIn = true;
-    // });
-  }
-
-  Future<void> _signUp(String email, String username, String password) async {
-    print("$username signing up with $email and $password");
-    // setState(() {
-    //   this._isLoggedIn = true;
-    // });
+  void loginUser() {
+    _getUser();
+    setState(() {
+      this._isLoggedIn = true;
+    });
   }
 
   Widget buildAppBar(int index) {
     switch (index) {
       case 0:
         return MyAppBar(
-            title: "Hello Anny,",
+            title: "Hello ${_user?.username ?? ""},",
             subtitle: "Let's save the earth today!",
             backgroundText: "Home");
       case 1:
@@ -118,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
         return MyAppBar(title: "Articles", backgroundText: "Articles");
       default:
         return ProfileAppBar(
-          name: "Anny Boi",
+          name: _user?.username ?? "",
           treesDonated: 10649,
           credits: 465,
         );
@@ -233,7 +236,7 @@ class _HomeViewState extends State<HomeView> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : _isLoggedIn
+        : _isLoggedIn && _user != null
             ? Scaffold(
                 backgroundColor: MyColours.BACKGROUND,
                 body: Container(
@@ -273,9 +276,12 @@ class _HomeViewState extends State<HomeView> {
               )
             : Scaffold(
                 backgroundColor: MyColours.BACKGROUND,
-                body: LoginView(
-                  login: _login,
-                  signUp: _signUp,
+                body: Container(
+                  height: MediaQuery.of(context).size.height,
+                  alignment: Alignment.center,
+                  child: SingleChildScrollView(
+                    child: LoginView(loginUser),
+                  ),
                 ),
               );
   }
