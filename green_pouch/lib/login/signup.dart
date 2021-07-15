@@ -3,14 +3,31 @@ import 'package:flutter/painting.dart';
 import 'package:green_pouch/login/view.dart';
 import 'package:green_pouch/my_colours.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   SignUpFunction signUp;
   Function() switchToLogIn;
 
   SignUpScreen(this.signUp, this.switchToLogIn);
+  @override
+  State<StatefulWidget> createState() {
+    return SignUpScreenState(signUp, switchToLogIn);
+  }
+}
+
+class SignUpScreenState extends State<SignUpScreen> {
+  SignUpFunction signUp;
+  Function() switchToLogIn;
+  final controllerUser = TextEditingController();
+  final controllerEmail = TextEditingController();
+  final controllerPass = TextEditingController();
+
+  SignUpScreenState(this.signUp, this.switchToLogIn);
 
   void onSignUp() async {
-    await signUp("email", "usernane", "password");
+    await signUp(
+        "${controllerEmail.text.toString()}",
+        "${controllerUser.text.toString()}",
+        "${controllerPass.text.toString()}");
   }
 
   @override
@@ -44,6 +61,7 @@ class SignUpScreen extends StatelessWidget {
               height: 20,
             ),
             TextField(
+              controller: controllerEmail,
               cursorColor: MyColours.PRIMARY,
               decoration: InputDecoration(
                 labelText: "Email",
@@ -53,6 +71,7 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
             TextField(
+              controller: controllerUser,
               cursorColor: MyColours.PRIMARY,
               decoration: InputDecoration(
                 labelText: "Username",
@@ -62,6 +81,7 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
             TextField(
+              controller: controllerPass,
               obscureText: true,
               cursorColor: MyColours.PRIMARY,
               decoration: InputDecoration(

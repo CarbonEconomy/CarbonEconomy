@@ -93,16 +93,16 @@ class _HomeViewState extends State<HomeView> {
 
   Future<void> _login(String username, String password) async {
     print("$username logged in with $password");
-    setState(() {
-      this._isLoggedIn = true;
-    });
+    // setState(() {
+    //   this._isLoggedIn = true;
+    // });
   }
 
   Future<void> _signUp(String email, String username, String password) async {
     print("$username signing up with $email and $password");
-    setState(() {
-      this._isLoggedIn = true;
-    });
+    // setState(() {
+    //   this._isLoggedIn = true;
+    // });
   }
 
   Widget buildAppBar(int index) {

@@ -3,14 +3,29 @@ import 'package:flutter/painting.dart';
 import 'package:green_pouch/login/view.dart';
 import 'package:green_pouch/my_colours.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginFunction login;
   Function() switchToSignUp;
 
   LoginScreen(this.login, this.switchToSignUp);
 
+  @override
+  State<StatefulWidget> createState() {
+    return LoginScreenState(login, switchToSignUp);
+  }
+}
+
+class LoginScreenState extends State<LoginScreen> {
+  LoginFunction login;
+  Function() switchToSignUp;
+  final myControllerPass = TextEditingController();
+  final myControllerUser = TextEditingController();
+
+  LoginScreenState(this.login, this.switchToSignUp);
+
   void onLogin() async {
-    await login("caca", "caca");
+    await login("${myControllerUser.text.toString()}",
+        "${myControllerPass.text.toString()}");
   }
 
   @override
@@ -44,6 +59,7 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             TextField(
+              controller: myControllerUser,
               cursorColor: MyColours.PRIMARY,
               decoration: InputDecoration(
                 labelText: "Username",
@@ -56,6 +72,7 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             TextField(
+              controller: myControllerPass,
               obscureText: true,
               cursorColor: MyColours.PRIMARY,
               decoration: InputDecoration(

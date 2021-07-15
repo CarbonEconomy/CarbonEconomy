@@ -42,5 +42,7 @@ class LoginViewState extends State<LoginView> {
     return showLogin
         ? LoginScreen(login, showSignUpScreen)
         : SignUpScreen(signUp, showLoginScreen);
+
+        
   }
 }
