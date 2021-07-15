@@ -21,11 +21,11 @@ app.get("/hello", (req, res, next) => {
 
 app.post("/transaction", async (req, res, next) => {
   const {
-    to, from, amount,
+    fromID, toID, amount, description
   } = req.body;
 
   try {
-    const response = await createTransaction(to, from, amount);
+    const response = await createTransaction(fromID, toID, amount, description);
 
     return res.status(201).json(response);
   } catch (error) {

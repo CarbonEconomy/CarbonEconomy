@@ -22,7 +22,7 @@ const insertDocument = async (txn, tableName, document) => {
  * @param amount The telephone number of the licence holder.
  * @returns The JSON record of the new licence reecord.
  */
-const createTransaction = async (from, to, amount) => {
+const createTransaction = async (fromID, toID, amount, description) => {
   let transaction;
   // Get a QLDB Driver instance
   const qldbDriver = getQldbDriver();
@@ -30,20 +30,21 @@ const createTransaction = async (from, to, amount) => {
     async (txn) => {
       const transactionDoc = [
         {
-          to,
-          from,
+          fromID,
+          toID,
           amount,
+          description,
         },
       ];
 
       // Create the record. This returns the unique document ID in an array as the result set
-      const result = await insertDocument(txn, "test", transactionDoc);
+      const result = await insertDocument(txn, "GreenTransaction", transactionDoc);
       const docIdArray = result.getResultList();
       const docId = docIdArray[0].get("documentId").stringValue();
       transaction = {
         transactionId: docId.toUpperCase(),
-        to,
-        from,
+        fromID,
+        toID,
       };
     }
   );
