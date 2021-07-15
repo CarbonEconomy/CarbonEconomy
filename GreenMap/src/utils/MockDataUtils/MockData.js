@@ -1,8 +1,9 @@
 import {fetchCsvData, getCsvData, getPoints} from "../../dataLoaders/LocationsLoader";
 
 // const singaporePoints = (async () => {await fetchCsvData()})()
-// const singaporePoints = fetchCsvData()
-let singaporePoints = fetchCsvData();
+// console.log("Singapore Points", singaporePoints)
+const singaporePoints = fetchCsvData()
+// let singaporePoints = fetchCsvData();
 
 function createLocation(lng, lat) { //
     return {long: lng, lat: lat}
@@ -18,7 +19,7 @@ function createGreenCredit(startPt, endPt, transferAmount, metadata) {
 }
 
 const getRandomPoint = async () => {
-    console.log("XXX singapore points", await singaporePoints)
+    // console.log("XXX singapore points", await singaporePoints)
     let points = await singaporePoints
     console.log("XXX singapore points variable", points)
     let point = points[Math.floor(Math.random() * points.length)]
@@ -63,10 +64,10 @@ const createRandomGreenCredit = async () => {
     return credit
 }
 
-export const generateRandomGreenCredits = (count) => {
+export const generateRandomGreenCredits = async (count) => {
     let credits = []
     for (let idx = 0; idx < count; idx++) {
-        const credit = createRandomGreenCredit()
+        const credit = await createRandomGreenCredit()
         credits.push(credit)
     }
     console.log("== generateRandomCredits, count(%s)", count, credits)

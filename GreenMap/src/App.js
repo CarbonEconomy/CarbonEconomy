@@ -9,8 +9,6 @@ import {JURONG_HILL_} from "./utils/MapUtils/SingaporeLocations";
 import {fetchData} from "./dataLoaders/LocationsLoader"
 import {generateRandomGreenCredits} from "./utils/MockDataUtils/MockData";
 
-let credits = generateRandomGreenCredits(10)
-console.log("XX testing Credit Creation:", credits)
 // const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_DEFAULT_PUBLIC_TOKEN
 //
 // console.log("XX token:", MAPBOX_ACCESS_TOKEN)
@@ -32,6 +30,7 @@ function getTooltip({object}) {
 const App = () => {
     const [data, setData] = useState({});
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
+    const [mockCredits, setMockCredits] = useState([])
 
     const handleResize = () => {
         setViewport((v) => {
@@ -43,10 +42,22 @@ const App = () => {
         });
     };
 
+    async function generateMockCredits() {
+        let credits = await generateRandomGreenCredits(10)
+        console.log("XX testing Credit Creation:", credits)
+        setMockCredits(credits)
+    }
+
     //loadfdata
     useEffect(() => {
         fetchData(setData);
     }, []);
+
+    useEffect(()=> {
+        generateMockCredits()
+    }, [])
+
+
 
 
     //resize
@@ -56,21 +67,22 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const display =  <DeckGL
+        layers={renderLayers({
+            data: data
+        })}
+        controller={{ type: MapController, dragRotate: true }}
+        initialViewState={viewport}
+    >
+        <StaticMap
+            mapStyle="mapbox://styles/mapbox/dark-v9"
+            // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
+            mapboxApiAccessToken={"pk.eyJ1IjoicnRzaGttciIsImEiOiJja3F3Z3RzOHMwMXgzMm9xdTU5ZTltMWk4In0.3QeM-It_jGjZKSB8BOcz_Q"} />
+    </DeckGL>
+
     return (
         <div className="App">
-            <DeckGL
-                layers={renderLayers({
-                    data: data
-                })}
-                controller={{ type: MapController, dragRotate: true }}
-                initialViewState={viewport}
-                >
-                <StaticMap
-                    mapStyle="mapbox://styles/mapbox/dark-v9"
-                    // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
-                    mapboxApiAccessToken={"pk.eyJ1IjoicnRzaGttciIsImEiOiJja3F3Z3RzOHMwMXgzMm9xdTU5ZTltMWk4In0.3QeM-It_jGjZKSB8BOcz_Q"} />
-            </DeckGL>
-
+            {display}
         </div>
     );
 };
