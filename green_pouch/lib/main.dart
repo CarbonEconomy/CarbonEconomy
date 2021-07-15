@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'GreenPouch',
         theme: ThemeData(
-          primaryColor: MyColours.PRIMARY,
-        ),
+            primaryColor: MyColours.PRIMARY,
+            focusColor: MyColours.PRIMARY,
+            colorScheme: ColorScheme.light(primary: MyColours.PRIMARY)),
         home: HomeView());
   }
 }

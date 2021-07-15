@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:green_pouch/appbar.dart';
 import 'package:green_pouch/favourites/view.dart';
 import 'package:green_pouch/information/view.dart';
+import 'package:green_pouch/login/view.dart';
 import 'package:green_pouch/my_colours.dart';
 import 'package:green_pouch/profile/view.dart';
 import 'package:green_pouch/profile/widgets/appbar.dart';
@@ -25,6 +26,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
   bool _isLoading = true;
+  bool _isLoggedIn = false;
 
   List<Reward> _rewards = [];
 
@@ -87,6 +89,20 @@ class _HomeViewState extends State<HomeView> {
     } catch (e) {
       print('An error occurred while querying Rewards: $e');
     }
+  }
+
+  Future<void> _login(String username, String password) async {
+    print("$username logged in with $password");
+    setState(() {
+      this._isLoggedIn = true;
+    });
+  }
+
+  Future<void> _signUp(String email, String username, String password) async {
+    print("$username signing up with $email and $password");
+    setState(() {
+      this._isLoggedIn = true;
+    });
   }
 
   Widget buildAppBar(int index) {
@@ -217,42 +233,50 @@ class _HomeViewState extends State<HomeView> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Scaffold(
-            backgroundColor: MyColours.BACKGROUND,
-            body: Container(
-              height: MediaQuery.of(context).size.height,
-              child:
-                  Stack(children: buildStackChildren(_selectedIndex, context)),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Favourites',
-                  backgroundColor: MyColours.PRIMARY,
+        : _isLoggedIn
+            ? Scaffold(
+                backgroundColor: MyColours.BACKGROUND,
+                body: Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Stack(
+                      children: buildStackChildren(_selectedIndex, context)),
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.saved_search),
-                  label: 'Search',
+                bottomNavigationBar: BottomNavigationBar(
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Favourites',
+                      backgroundColor: MyColours.PRIMARY,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.saved_search),
+                      label: 'Search',
+                      backgroundColor: MyColours.PRIMARY,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.school),
+                      label: 'Information',
+                      backgroundColor: MyColours.PRIMARY,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.account_circle),
+                      label: 'Profile',
+                      backgroundColor: MyColours.PRIMARY,
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: Colors.white,
                   backgroundColor: MyColours.PRIMARY,
+                  unselectedItemColor: Colors.black,
+                  onTap: _onItemTapped,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.school),
-                  label: 'Information',
-                  backgroundColor: MyColours.PRIMARY,
+              )
+            : Scaffold(
+                backgroundColor: MyColours.BACKGROUND,
+                body: LoginView(
+                  login: _login,
+                  signUp: _signUp,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
-                  label: 'Profile',
-                  backgroundColor: MyColours.PRIMARY,
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.white,
-              backgroundColor: MyColours.PRIMARY,
-              unselectedItemColor: Colors.black,
-              onTap: _onItemTapped,
-            ),
-          );
+              );
   }
 }
