@@ -6,11 +6,15 @@ import {StaticMap}from "react-map-gl"
 import { csv } from "d3-fetch";
 import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
 import {JURONG_HILL_} from "./utils/MapUtils/SingaporeLocations";
-// const DATA_URL = "./heatmap-data.csv";
-const DATA_URL = "./SingaporeLocations_smaller.csv";
-require("dotenv").config()
+import {fetchData} from "./dataLoaders/LocationsLoader"
+import {generateRandomGreenCredits} from "./utils/MockDataUtils/MockData";
 
-const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_DEFAULT_PUBLIC_TOKEN
+let credits = generateRandomGreenCredits(10)
+console.log("XX testing Credit Creation:", credits)
+// const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_DEFAULT_PUBLIC_TOKEN
+//
+// console.log("XX token:", MAPBOX_ACCESS_TOKEN)
+
 function getTooltip({object}) {
     if (!object) {
         return null;
@@ -29,29 +33,6 @@ const App = () => {
     const [data, setData] = useState({});
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
 
-    async function fetchData(){
-        const result = await csv(DATA_URL);
-        console.log("XXX data url:", DATA_URL)
-        console.log("XXX contents:", result)
-
-        let points = result.map(function (d) {
-            return { position: [+d.lng, +d.lat] };
-        });
-        //
-        // for (let i = 0; i < 1000; i++) {
-        //     points.push({position: JURONG_HILL_})
-        // }
-        console.log("XXX hell lot of points:", points)
-        setData(points);
-    }
-
-    const addJurongHill1000Times = (points) => {
-        for (let i = 0; i < 1000; i++) {
-           points.append({position: JURONG_HILL_})
-        }
-        return points
-    }
-
     const handleResize = () => {
         setViewport((v) => {
             return {
@@ -64,7 +45,7 @@ const App = () => {
 
     //loadfdata
     useEffect(() => {
-        fetchData();
+        fetchData(setData);
     }, []);
 
 
@@ -75,7 +56,6 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    console.log("XX token:", MAPBOX_ACCESS_TOKEN)
     return (
         <div className="App">
             <DeckGL

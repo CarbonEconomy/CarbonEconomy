@@ -17,8 +17,8 @@ export const INITIAL_VIEWPORT = {
     height: window.innerHeight,
     longitude: JURONG_HILL[1],
     latitude: JURONG_HILL[0],
-    zoom: 6,
-    maxZoom: 16,
+    zoom: 16,
+    maxZoom: 26,
     pitch: 65,
     bearing: 0
 }

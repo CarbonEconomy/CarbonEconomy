@@ -5,12 +5,12 @@ import csv
 import random
 
 COUNTRY = "Singapore"
-NUM_POINTS = 1000
-MIN_COUNT = 10
+NUM_POINTS = 10000
+MIN_COUNT = 30
 MAX_COUNT = 60
 
 def writeToCSV(coordinates):
-    with open('SingaporeLocations_smaller.csv', 'w', newline='') as csvfile:
+    with open('SingaporeLocations_.csv', 'w', newline='') as csvfile:
         fieldnames = ['lng', 'lat']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
