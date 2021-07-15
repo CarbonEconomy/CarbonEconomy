@@ -31,6 +31,14 @@ class SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
+  void dispose() {
+    controllerEmail.dispose();
+    controllerPass.dispose();
+    controllerUser.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(

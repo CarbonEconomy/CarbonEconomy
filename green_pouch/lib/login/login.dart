@@ -29,6 +29,13 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void dispose() {
+    myControllerPass.dispose();
+    myControllerUser.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
