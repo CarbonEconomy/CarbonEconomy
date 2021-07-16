@@ -1,11 +1,13 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
+const cors = require('cors')
 const { createTransaction, getTransactionFrom, getTransactionTo, getAllTransactions } = require('./helper/Rewards');
 const { createUser, getUserByID, getAllUsers, updateUserCredit } = require('./helper/Users');
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cors())
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
