@@ -5,6 +5,7 @@
   "dependencies": {
     "@deck.gl/aggregation-layers": "^8.4.20",
     "@deck.gl/core": "^8.4.20",
+    "@deck.gl/extensions": "^8.4.20",
     "@deck.gl/layers": "^8.4.20",
     "@deck.gl/react": "^8.4.20",
     "@testing-library/jest-dom": "^5.11.4",
@@ -12,6 +13,7 @@
     "@testing-library/user-event": "^12.1.10",
     "d3-fetch": "^3.0.1",
     "d3-request": "^1.0.6",
+    "d3-scale": "^4.0.0",
     "deck.gl": "^8.4.20",
     "dotenv": "^10.0.0",
     "react": "^17.0.2",

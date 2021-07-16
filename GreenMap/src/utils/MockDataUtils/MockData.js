@@ -59,7 +59,7 @@ const createRandomGreenCredit = async (data) => {
 }
 
 export const generateRandomGreenCredits = async (data, count) => {
-    // console.log("==> generateRandomGreenCredits", data, count)
+    // console.log("==> generateRandomGreenCredits", hexagonData, count)
     let credits = []
     for (let idx = 0; idx < count; idx++) {
         const credit = await createRandomGreenCredit(data)
