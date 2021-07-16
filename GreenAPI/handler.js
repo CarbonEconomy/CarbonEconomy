@@ -15,6 +15,7 @@ const {
   getAllUsers,
   updateUserCredit,
 } = require("./helper/Users");
+const { getEmissions } = require("./helper/Emissions");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -164,11 +165,12 @@ app.get("/user", async (req, res, next) => {
 
 app.post("/emissions", async (req, res, next) => {
   try {
-    const response = await getAllUsers();
+    const response = await getEmissions(req.body);
+
     return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
-      status: 500,
+      status: error.status || 500,
       title: error.name,
       detail: error.message,
     };

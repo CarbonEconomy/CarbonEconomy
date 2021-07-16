@@ -5,6 +5,7 @@
   "dependencies": {
     "amazon-qldb-driver-nodejs": "^2.2.0",
     "aws-sdk": "^2.945.0",
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
