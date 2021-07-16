@@ -13,6 +13,12 @@ const findByID = async (txn, userID) => {
     return result;
 }
 
+const findAll = async (txn) => {
+    const statement = `SELECT * FROM ${tableName}`;
+    let result = await txn.execute(statement);
+    return result;
+}
+
 const insertUser = async (txn, document) => {
     const statement = `INSERT INTO ${tableName} ?`;
     let result = await txn.execute(statement, document);
@@ -58,10 +64,20 @@ const getUserByID = async (userID) => {
     await qldbDriver.executeLambda(
         async (txn) => {
             const result = await findByID(txn, userID);
-            resultList = result.getResultList();
-            if (resultList.length != 0) {
-                user = JSON.stringify(resultList[0]);
-            }
+            user = result.getResultList();
+        }
+    );
+    return user;
+}
+
+const getAllUsers = async () => {
+    let user;
+
+    const qldbDriver = getQldbDriver();
+    await qldbDriver.executeLambda(
+        async (txn) => {
+            const result = await findAll(txn);
+            user = result.getResultList();
         }
     );
     return user;
@@ -92,5 +108,6 @@ const updateUserCredit = async (userID, creditToAdd) => {
 module.exports = {
     createUser,
     getUserByID,
+    getAllUsers,
     updateUserCredit
 };

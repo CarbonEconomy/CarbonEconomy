@@ -28,6 +28,12 @@ const findAllTo = async (txn, toID) => {
   return result;
 }
 
+const findAll = async (txn) => {
+  const statement = `SELECT * FROM ${tableName}`
+  let result = await txn.execute(statement);
+  return result;
+}
+
 /**
  * Creates a new Transaction record in the QLDB ledger.
  * @param from The name of the licence holder.
@@ -71,11 +77,7 @@ const getTransactionFrom = async (fromID) => {
   await qldbDriver.executeLambda(
     async (txn) => {
       const result = await findAllFrom(txn, fromID);
-      resultList = result.getResultList();
-
-      if (resultList.length != 0) {
-        transaction = JSON.stringify(resultList);
-      }
+      transaction = result.getResultList();
     }
   );
   return transaction;
@@ -88,11 +90,20 @@ const getTransactionTo = async (toID) => {
   await qldbDriver.executeLambda(
     async (txn) => {
       const result = await findAllTo(txn, toID);
-      resultList = result.getResultList();
+      transaction = result.getResultList();
+    }
+  );
+  return transaction;
+}
 
-      if (resultList.length != 0) {
-        transaction = JSON.stringify(resultList);
-      }
+const getAllTransactions = async () => {
+  let transaction;
+
+  const qldbDriver = getQldbDriver();
+  await qldbDriver.executeLambda(
+    async (txn) => {
+      const result = await findAll(txn);
+      transaction = result.getResultList();
     }
   );
   return transaction;
@@ -353,7 +364,8 @@ const getTransactionTo = async (toID) => {
 module.exports = {
   createTransaction,
   getTransactionFrom,
-  getTransactionTo
+  getTransactionTo,
+  getAllTransactions
   // updateLicence,
   // getLicence,
   // updateContact,
