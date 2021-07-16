@@ -31,7 +31,6 @@ app.post("/transaction", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -47,7 +46,6 @@ app.get("/transaction/from/:fromID", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -63,7 +61,6 @@ app.get("/transaction/to/:toID", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -79,7 +76,6 @@ app.get("/transaction", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -99,7 +95,6 @@ app.post("/user", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -115,7 +110,6 @@ app.patch("/user/:userID/update/credit/:creditToAdd", async (req, res, next) => 
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -131,7 +125,6 @@ app.get("/user/:userID", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
     const errorBody = {
       status: 500,
       title: error.name,
@@ -147,7 +140,21 @@ app.get("/user", async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    // Log.error(`Error returned: ${error}`);
+    const errorBody = {
+      status: 500,
+      title: error.name,
+      detail: error.message,
+    };
+    return res.status(500).json(errorBody);
+  }
+});
+
+app.post("/emissions", async (req, res, next) => {
+  try {
+    const response = await getAllUsers();
+
+    return res.status(200).json(response);
+  } catch (error) {
     const errorBody = {
       status: 500,
       title: error.name,
