@@ -44,7 +44,7 @@ app.get("/transaction/from/:fromID", async (req, res, next) => {
   try {
     const response = await getTransactionFrom(req.params.fromID);
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
       status: 500,
@@ -59,7 +59,7 @@ app.get("/transaction/to/:toID", async (req, res, next) => {
   try {
     const response = await getTransactionTo(req.params.toID);
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
       status: 500,
@@ -74,7 +74,7 @@ app.get("/transaction", async (req, res, next) => {
   try {
     const response = await getAllTransactions();
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
       status: 500,
@@ -123,7 +123,7 @@ app.get("/user/:userID", async (req, res, next) => {
   try {
     const response = await getUserByID(req.params.userID);
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
       status: 500,
@@ -138,7 +138,7 @@ app.get("/user", async (req, res, next) => {
   try {
     const response = await getAllUsers();
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     const errorBody = {
       status: 500,
