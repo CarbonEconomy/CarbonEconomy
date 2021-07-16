@@ -4,12 +4,12 @@ const haversine = require("haversine");
 
 // Estimated emissions in g CO2/km
 const localDeliveryEmissions = {
-  TRUCK: 400,
-  VAN: 300,
   CAR: 200,
   DIESEL_CAR: 300,
   HYBRID_CAR: 175,
   ELECTRIC_CAR: 150,
+  TRUCK: 400,
+  VAN: 300,
   BIKE: 175,
   E_SCOOTER: 50,
   BICYCLE: 0,
