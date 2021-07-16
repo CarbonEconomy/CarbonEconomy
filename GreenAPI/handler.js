@@ -2,7 +2,7 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 const { createTransaction, getTransactionFrom, getTransactionTo } = require('./helper/Rewards');
-const rewards = require('./routes/rewards.routes')
+const { createUser, getUserByID, updateUserCredit } = require('./helper/Users');
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -71,7 +71,58 @@ app.get("/transaction/to/:toID", async (req, res, next) => {
   }
 });
 
-app.use('/', rewards)
+app.post("/user", async (req, res, next) => {
+  const {
+    name
+  } = req.body;
+
+  try {
+    const response = await createUser(name);
+
+    return res.status(201).json(response);
+  } catch (error) {
+    // Log.error(`Error returned: ${error}`);
+    const errorBody = {
+      status: 500,
+      title: error.name,
+      detail: error.message,
+    };
+    return res.status(500).json(errorBody);
+  }
+});
+
+app.patch("/user/:userID/update/credit/:creditToAdd", async (req, res, next) => {
+  try {
+    const response = await updateUserCredit(req.params.userID, req.params.creditToAdd);
+
+    return res.status(201).json(response);
+  } catch (error) {
+    // Log.error(`Error returned: ${error}`);
+    const errorBody = {
+      status: 500,
+      title: error.name,
+      detail: error.message,
+    };
+    return res.status(500).json(errorBody);
+  }
+});
+
+app.get("/user/:userID", async (req, res, next) => {
+  try {
+    const response = await getUserByID(req.params.userID);
+
+    return res.status(201).json(response);
+  } catch (error) {
+    // Log.error(`Error returned: ${error}`);
+    const errorBody = {
+      status: 500,
+      title: error.name,
+      detail: error.message,
+    };
+    return res.status(500).json(errorBody);
+  }
+});
+
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Not Found",

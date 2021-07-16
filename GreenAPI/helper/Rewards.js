@@ -6,22 +6,23 @@
 // const AWSXRay = require("aws-xray-sdk-core");
 // AWSXRay.captureAWS(require("aws-sdk"));
 const { getQldbDriver } = require("./ConnectToLedger");
+const tableName = "GreenTransaction";
 
 // Transactions for testing, probably not gonna use this
 
-const insertDocument = async (txn, tableName, document) => {
+const insertDocument = async (txn, document) => {
   const statement = `INSERT INTO ${tableName} ?`;
   let result = await txn.execute(statement, document);
   return result;
 };
 
-const findAllFrom = async (txn, tableName, fromID) => {
+const findAllFrom = async (txn, fromID) => {
   const statement = `SELECT * FROM ${tableName} AS gt WHERE gt.fromID = ?`
   let result = await txn.execute(statement, parseInt(fromID));
   return result;
 }
 
-const findAllTo = async (txn, tableName, toID) => {
+const findAllTo = async (txn, toID) => {
   const statement = `SELECT * FROM ${tableName} AS gt WHERE gt.toID = ?`
   let result = await txn.execute(statement, parseInt(toID));
   return result;
@@ -50,7 +51,7 @@ const createTransaction = async (fromID, toID, amount, description) => {
       ];
 
       // Create the record. This returns the unique document ID in an array as the result set
-      const result = await insertDocument(txn, "GreenTransaction", transactionDoc);
+      const result = await insertDocument(txn, transactionDoc);
       const docIdArray = result.getResultList();
       const docId = docIdArray[0].get("documentId").stringValue();
       transaction = {
@@ -69,7 +70,7 @@ const getTransactionFrom = async (fromID) => {
   const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(
     async (txn) => {
-      const result = await findAllFrom(txn, "GreenTransaction", fromID);
+      const result = await findAllFrom(txn, fromID);
       resultList = result.getResultList();
 
       if (resultList.length != 0) {
@@ -77,7 +78,7 @@ const getTransactionFrom = async (fromID) => {
       }
     }
   );
-  return transaction
+  return transaction;
 }
 
 const getTransactionTo = async (toID) => {
@@ -86,7 +87,7 @@ const getTransactionTo = async (toID) => {
   const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(
     async (txn) => {
-      const result = await findAllFrom(txn, "GreenTransaction", toID);
+      const result = await findAllTo(txn, toID);
       resultList = result.getResultList();
 
       if (resultList.length != 0) {
@@ -94,7 +95,7 @@ const getTransactionTo = async (toID) => {
       }
     }
   );
-  return transaction
+  return transaction;
 }
 
 // /**
