@@ -21,6 +21,24 @@ List<ShoppingReward> MOCK_SHOPPING_REWARDS = [
           "https://shopsinsg.com/wp-content/uploads/2016/06/the-body-shop-tiong-bahru-plaza-singapore-001.jpg")
 ];
 
+List<Food> MOCK_FOOD = [
+  Food(
+      title: '#Salted and Hung',
+      url: 'https://media.timeout.com/images/105669971/750/422/image.jpg'),
+  Food(
+      title: '#Homely',
+      url:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Hainanese_Chicken_Rice.jpg/220px-Hainanese_Chicken_Rice.jpg'),
+  Food(
+      title: '#Sweet and Cute',
+      url:
+          'https://www.sweetandsavorybyshinee.com/wp-content/uploads/2013/01/Basic-French-Macarons-1.jpg'),
+  Food(
+      title: '#Celebration',
+      url:
+          'https://cdn.shopify.com/s/files/1/0004/8300/0371/products/ATD_Cakes_HappyBirthdayTopper_017_Banner_de5366b0-1ce3-4338-ae43-be9dd1eb3e89_720x.jpg?v=1612318923')
+];
+
 class FavouritesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -36,7 +54,10 @@ class FavouritesView extends StatelessWidget {
           Title("Shopping"),
           VerticalPad(16.0),
           ShoppingRewardsList(MOCK_SHOPPING_REWARDS),
-          foodTile()
+          VerticalPad(20),
+          Title("Food"),
+          VerticalPad(20),
+          FoodList(MOCK_FOOD)
         ],
       ),
     );
