@@ -13,6 +13,9 @@
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "2.3.2",
     "serverless": "^2.51.2",
     "serverless-offline": "^7.0.0"
   }

@@ -4,7 +4,7 @@
  * with QLDB
  */
 
-const { QldbDriver } = require('amazon-qldb-driver-nodejs');
+const { QldbDriver } = require("amazon-qldb-driver-nodejs");
 
 /**
  * Create a driver for interacting with QLDB.
@@ -15,8 +15,8 @@ const { QldbDriver } = require('amazon-qldb-driver-nodejs');
 function createQldbDriver(
   ledgerName = "CarbonEconomy",
   serviceConfigurationOptions = {
-    region: "us-east-1"
-  },
+    region: "us-east-1",
+  }
 ) {
   const qldbDriver = new QldbDriver(ledgerName, serviceConfigurationOptions);
   return qldbDriver;
