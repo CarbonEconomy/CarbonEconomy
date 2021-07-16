@@ -1,33 +1,13 @@
-Endpoint: https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev/
+Endpoint: https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev
 
 ## Emissions API
-----
-  <_Additional information about your API call. Try to use verbs that match both request type (fetching vs modifying) and plurality (one vs multiple)._>
 
 ### URL
-
-  <_The URL Structure (path only, no root url)_>
   /emissions
 ### Method
-  
-  <_The request type_>
-
   `POST`
-  
-<!-- *  **URL Params**
-
-   <_If URL params exist, specify them in accordance with name mentioned in URL section. Separate into optional and required. Document data constraints._> 
-
-   **Required:**
- 
-   `id=[integer]`
-
-   **Optional:**
- 
-   `photo_id=[alphanumeric]` -->
 
 ### Data Params
-  <_If making a post request, what should the body payload look like? URL Params rules apply here too._>
 
 #### start (required)
   Obj in the following format 
@@ -63,8 +43,8 @@ An array containing the following string values
     * BICYCLE
     * WALKER
   * For Global Delivery
-    * "AIR"
-    * "SHIP"
+    * AIR
+    * SHIP
   * Default values if not provided
     * CAR
     * HYBRID_CAR
@@ -75,8 +55,6 @@ An array containing the following string values
     * WALKER
 
 * **Sample Call:**
-
-  <_Just a sample call to your endpoint in a runnable format ($.ajax call or a curl request) - this makes life easier and more predictable._> 
 
   ```
     curl --header "Content-Type: application/json" \
@@ -134,7 +112,5 @@ An array containing the following string values
     ]
   ```
 
-* **Notes:**
-
-  <_This is where all uncertainties, commentary, discussion etc. can go. I recommend timestamping and identifying oneself when leaving comments here._> 
-  A GET request would be the correct RESTful way to do this, but that would mean serialising JSON into query string of which there is no common standard. 
+### Notes:
+  A GET request would be the correct RESTful way to do this, but that would mean serialising JSON into query string of which there is no common standard.
