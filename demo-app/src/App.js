@@ -145,7 +145,7 @@ function App() {
       </Grid>
 
       <Grid item xs={6}>
-        <div style={{ height: '60vh', width: '100%' }}>
+        <div style={{ height: '80vh', width: '100%' }}>
           <GoogleMapReact
             bootstrapURLKeys={{ key: "AIzaSyB5lO1127mqrFQCMmQ6zUgO-vffxeoyUlI" }}
             defaultCenter={{ lat: 1.344128719212576, lng: 103.81733822489308 }}
@@ -153,8 +153,8 @@ function App() {
             yesIWantToUseGoogleMapApiInternals
             onClick={onMapClick}
           >
-            {start.lat && <Button variant="contained" color="secondary" {...start}>START</Button>}
-            {end.lat && <Button variant="contained" color="secondary" {...end}>END</Button>}
+            {start.lat && <Button variant="contained" color="primary" {...start}>START</Button>}
+            {end.lat && <Button variant="contained" color="primary" {...end}>END</Button>}
 
           </GoogleMapReact>
           <Grid container style={{ marginBottom: 50, marginTop: 10 }}>
