@@ -38,14 +38,13 @@ const createUser = async (name) => {
   const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(async (txn) => {
     const maxID = await getMaxUserID(txn);
-    resultList = maxID.getResultList();
+    const resultList = maxID.getResultList();
     const newID = parseInt(resultList[0].get("maxID")) + 1;
 
     const userDoc = [
       {
         id: newID,
         name,
-        id: 0,
       },
     ];
 
@@ -86,7 +85,7 @@ const updateUserCredit = async (userID, creditToAdd) => {
   const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(async (txn) => {
     const currUser = await findByID(txn, userID);
-    resultList = currUser.getResultList();
+    const resultList = currUser.getResultList();
     const newCredit =
       parseInt(resultList[0].get("totalCredit")) + parseInt(creditToAdd);
 
