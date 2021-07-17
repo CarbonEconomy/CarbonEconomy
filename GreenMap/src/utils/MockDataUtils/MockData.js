@@ -12,12 +12,8 @@ function createGreenCredit(startPt, endPt, transferAmount, metadata) {
 }
 
 const getRandomPoint = async (data) => {
-    // console.log("XXX singapore points", await singaporePoints)
-    // let points = await singaporePoints
     let points = data
-    // console.log("XXX singapore points variable", points)
     let point = points[Math.floor(Math.random() * points.length)]
-    // console.log("== randomPoint ", point)
     return point.position
 }
 
@@ -26,7 +22,6 @@ const getRandomStartEndPoints = async (data) => {
     const [end_lng, end_lat] =  await getRandomPoint(data)
     const startLocation = createLocation(start_lng, start_lat)
     const endLocation = createLocation(end_lng, end_lat)
-    // console.log("== random start end points", startLocation, endLocation)
     return [startLocation, endLocation]
 }
 
@@ -59,7 +54,6 @@ const createRandomGreenCredit = async (data) => {
 }
 
 export const generateRandomGreenCredits = async (data, count) => {
-    // console.log("==> generateRandomGreenCredits", hexagonData, count)
     let credits = []
     for (let idx = 0; idx < count; idx++) {
         const credit = await createRandomGreenCredit(data)

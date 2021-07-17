@@ -23,35 +23,13 @@ const brushingExtension = new BrushingExtension();
 
 export function renderLayers(props) {
     const {hexagonData, arcData} = props;
+    console.log("HexagonData:", hexagonData)
+    console.log("arcData", arcData)
 
-    // const tileLayer = new TileLayer({
-    //     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
-    //     hexagonData: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-    //     minZoom: 0,
-    //     maxZoom: 18,
-    //     tileSize: 256,
-    //
-    //     renderSubLayers: (props) => {
-    //         const {
-    //             bbox: { west, south, east, north }
-    //         } = props.tile;
-    //
-    //         return new BitmapLayer(props, {
-    //             hexagonData: null,
-    //             image: props.hexagonData,
-    //             bounds: [west, south, east, north]
-    //         });
-    //     }
-    // });
-
-    console.log("first arcdata", arcData)
-    const first = arcData[0]
-    console.log("first startpoint:", first.start_point)
-    console.log("first endpoint:", first.end_point)
 
     const arcLayer = new ArcLayer({
         id: 'arc-layer',
-        arcData,
+        data: arcData,
         getSourcePosition: d => {
             const {long, lat} = d.start_point
             console.log("XXX getting source: long: %s, lat: %s", long, lat)
@@ -70,22 +48,19 @@ export function renderLayers(props) {
         extensions: [brushingExtension]
     })
 
-    const hexagonLayer = null
+    const hexagonLayer = new HexagonLayer({
+        id: "hexagon-layer",
+        data: hexagonData,
+        colorRange,
+        radius: 20,
+        extruded: true,
+        elevationScale: 40,
+        elevationRange: [0, 30],
+        getPosition: (d) => {
+            return d.position
+        }
+    })
 
-    // new HexagonLayer({
-    //     id: "hexagon-layer",
-    //     data: hexagonData,
-    //     colorRange,
-    //     radius: 50,
-    //     extruded: true,
-    //     elevationScale: 40,
-    //     elevationRange: [0, 30],
-    //     getPosition: (d) => {
-    //         return d.position
-    //     }
-    // })
 
-    const layers = [hexagonLayer, arcLayer];
-
-    return layers;
+    return [hexagonLayer, arcLayer];
 }
