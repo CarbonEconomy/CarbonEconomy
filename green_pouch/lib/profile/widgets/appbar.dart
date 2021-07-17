@@ -6,10 +6,14 @@ class ProfileAppBar extends StatelessWidget {
   String name;
   int treesDonated;
   int credits;
+  dynamic logout;
 
   static const Color _translucentWhite = Color.fromRGBO(255, 255, 255, 0.15);
   ProfileAppBar(
-      {required this.name, required this.treesDonated, required this.credits});
+      {required this.name,
+      required this.treesDonated,
+      required this.credits,
+      required this.logout});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +58,12 @@ class ProfileAppBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage("graphics/cat.jpg"),
+                InkWell(
+                  onTap: logout,
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage("graphics/cat.jpg"),
+                  ),
                 ),
                 SizedBox(
                   height: 10,

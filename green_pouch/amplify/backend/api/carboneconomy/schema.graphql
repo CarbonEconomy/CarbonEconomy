@@ -1,7 +1,16 @@
-type Reward @model @auth(rules: [{allow: public}]) {
+type UserReward @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Rewards: [Reward!] @connection(keyName: "byUserReward", fields: ["id"])
+  userId: String!
+  treesDonated: Int!
+}
+
+type Reward @model @auth(rules: [{allow: public}]) @key(name: "byUserReward", fields: ["userrewardID"]) {
   id: ID!
   title: String!
   pictureUrl: String!
   organisation: String!
   treesRequired: Int
+  userrewardID: ID
 }
+ 

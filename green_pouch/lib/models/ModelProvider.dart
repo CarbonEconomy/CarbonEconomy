@@ -17,14 +17,16 @@
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'Reward.dart';
+import 'UserReward.dart';
 
 export 'Reward.dart';
+export 'UserReward.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "35ba01223e0348c3efd019e576621418";
+  String version = "4f0feb8216e0175face3987ad2b1b063";
   @override
-  List<ModelSchema> modelSchemas = [Reward.schema];
+  List<ModelSchema> modelSchemas = [Reward.schema, UserReward.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
@@ -33,6 +35,10 @@ class ModelProvider implements ModelProviderInterface {
     switch(modelName) {
     case "Reward": {
     return Reward.classType;
+    }
+    break;
+    case "UserReward": {
+    return UserReward.classType;
     }
     break;
     default: {

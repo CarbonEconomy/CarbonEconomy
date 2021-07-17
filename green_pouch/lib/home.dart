@@ -1,40 +1,45 @@
-import 'package:amplify_api/amplify_api.dart';
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:green_pouch/appbar.dart';
 import 'package:green_pouch/favourites/view.dart';
 import 'package:green_pouch/information/view.dart';
-import 'package:green_pouch/login/view.dart';
 import 'package:green_pouch/my_colours.dart';
+import 'package:green_pouch/profile/model.dart';
 import 'package:green_pouch/profile/view.dart';
 import 'package:green_pouch/profile/widgets/appbar.dart';
 import 'package:green_pouch/search/view.dart';
+import 'package:http/http.dart' as http;
 
-import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  AuthUser user;
+  Function logout;
+
+  HomeView({Key? key, required this.user, required this.logout})
+      : super(key: key);
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState(user, logout);
 }
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
   bool _isLoading = true;
-  bool _isLoggedIn = false;
 
-  AuthUser? _user;
+  AuthUser _user;
+  Function logout;
 
   List<Reward> _rewards = [];
+  int credits = 0;
+  UserReward? userReward;
+  late StreamSubscription _subscription;
 
-  final _amplifyApi = AmplifyAPI();
-  final _amplifyDataStore =
-      AmplifyDataStore(modelProvider: ModelProvider.instance);
-  final _amplifyAuth = AmplifyAuthCognito();
+  _HomeViewState(this._user, this.logout);
 
   @override
   void initState() {
@@ -44,49 +49,24 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void dispose() {
-    // to be filled in a later step
+    _subscription.cancel();
     super.dispose();
   }
 
   Future<void> _initializeApp() async {
-    // configure Amplify
-
-    if (!Amplify.isConfigured) {
-      await _configureAmplify();
-    }
-
-    var session = await Amplify.Auth.fetchAuthSession();
-
-    if (session.isSignedIn) {
-      await _getUser();
-    }
-
     await _fetchRewards();
+    await _fetchCredits();
 
-    // after configuring Amplify, update loading ui state to loaded state
+    _subscription =
+        Amplify.DataStore.observe(UserReward.classType).listen((event) {
+      _fetchUserReward();
+    });
+
+    await _fetchUserReward();
+
     setState(() {
       _isLoading = false;
-      _isLoggedIn = session.isSignedIn;
     });
-  }
-
-  Future<void> _getUser() async {
-    var user = await Amplify.Auth.getCurrentUser();
-    setState(() {
-      this._user = user;
-    });
-  }
-
-  Future<void> _configureAmplify() async {
-    try {
-      await Amplify.addPlugins([_amplifyDataStore, _amplifyApi, _amplifyAuth]);
-      await Amplify.configure(amplifyconfig);
-      print("Amplify is configured: ${Amplify.isConfigured}");
-    } catch (e) {
-      // error handling can be improved for sure!
-      // but this will be sufficient for the purposes of this tutorial
-      print('An error occurred while configuring Amplify: $e');
-    }
   }
 
   Future<void> _fetchRewards() async {
@@ -101,18 +81,54 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  void loginUser() {
-    _getUser();
+  Future<void> _fetchCredits() async {
+    var res = await http.get(Uri.parse(
+        'https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev/transaction'));
+
+    List<Transaction> transactions = jsonDecode(res.body)
+        .map<Transaction>((x) => Transaction.fromJson(x))
+        .toList();
+
+    int received = transactions
+        .where((element) => element.toID == _user.username)
+        .map<int>((e) => e.amount)
+        .fold(0, (value, element) => value + element);
+
+    int used = transactions
+        .where((element) => element.fromID == _user.username)
+        .map<int>((e) => e.amount)
+        .fold(0, (value, element) => value + element);
+
     setState(() {
-      this._isLoggedIn = true;
+      credits = received - used;
     });
+  }
+
+  Future<void> _fetchUserReward() async {
+    List<UserReward> userRewards = await Amplify.DataStore.query(
+        UserReward.classType,
+        where: UserReward.USERID.eq(_user.username));
+
+    if (userRewards.length == 0) {
+      UserReward userReward =
+          UserReward(userId: _user.username, treesDonated: 0, Rewards: []);
+      await Amplify.DataStore.save(userReward);
+
+      setState(() {
+        this.userReward = userReward;
+      });
+    } else {
+      setState(() {
+        this.userReward = userRewards[0];
+      });
+    }
   }
 
   Widget buildAppBar(int index) {
     switch (index) {
       case 0:
         return MyAppBar(
-            title: "Hello ${_user?.username ?? ""},",
+            title: "Hello ${_user.username},",
             subtitle: "Let's save the earth today!",
             backgroundText: "Home");
       case 1:
@@ -121,9 +137,10 @@ class _HomeViewState extends State<HomeView> {
         return MyAppBar(title: "Articles", backgroundText: "Articles");
       default:
         return ProfileAppBar(
-          name: _user?.username ?? "",
-          treesDonated: 10649,
-          credits: 465,
+          name: _user.username,
+          logout: logout,
+          treesDonated: userReward?.treesDonated ?? 0,
+          credits: this.credits,
         );
     }
   }
@@ -236,53 +253,42 @@ class _HomeViewState extends State<HomeView> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : _isLoggedIn && _user != null
-            ? Scaffold(
-                backgroundColor: MyColours.BACKGROUND,
-                body: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Stack(
-                      children: buildStackChildren(_selectedIndex, context)),
-                ),
-                bottomNavigationBar: BottomNavigationBar(
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Favourites',
-                      backgroundColor: MyColours.PRIMARY,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.saved_search),
-                      label: 'Search',
-                      backgroundColor: MyColours.PRIMARY,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.school),
-                      label: 'Information',
-                      backgroundColor: MyColours.PRIMARY,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle),
-                      label: 'Profile',
-                      backgroundColor: MyColours.PRIMARY,
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  selectedItemColor: Colors.white,
+        : Scaffold(
+            backgroundColor: MyColours.BACKGROUND,
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              child:
+                  Stack(children: buildStackChildren(_selectedIndex, context)),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Favourites',
                   backgroundColor: MyColours.PRIMARY,
-                  unselectedItemColor: Colors.black,
-                  onTap: _onItemTapped,
                 ),
-              )
-            : Scaffold(
-                backgroundColor: MyColours.BACKGROUND,
-                body: Container(
-                  height: MediaQuery.of(context).size.height,
-                  alignment: Alignment.center,
-                  child: SingleChildScrollView(
-                    child: LoginView(loginUser),
-                  ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.saved_search),
+                  label: 'Search',
+                  backgroundColor: MyColours.PRIMARY,
                 ),
-              );
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.school),
+                  label: 'Information',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: 'Profile',
+                  backgroundColor: MyColours.PRIMARY,
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              backgroundColor: MyColours.PRIMARY,
+              unselectedItemColor: Colors.black,
+              onTap: _onItemTapped,
+            ),
+          );
   }
 }
