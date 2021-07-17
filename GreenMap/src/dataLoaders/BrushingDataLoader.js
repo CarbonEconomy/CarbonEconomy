@@ -1,61 +1,44 @@
-/**
- * TODO: GREEN CREDIT HAS THE DATA TO MAKE THIS WORK, WILL TRY AFTER GETTING ARC LAYER DONE FIRST
- */
-import {scaleLinear} from 'd3-scale';
+import {scaleLinear} from "d3-scale";
 
-function getLayerData(data) {
-    if (!data || !data.length) {
+function getArcLayerProps(formattedData) {
+    if (!formattedData || !Object.keys(formattedData).length) {
         return {};
     }
+
     const arcs = [];
     const targets = [];
     const sources = [];
-    const pairs = {};
 
-    data.forEach((county, i) => {
-        const {flows, centroid: targetCentroid} = county.properties;
-        const value = {gain: 0, loss: 0};
+    Object.keys(formattedData).forEach((sourcePoint) => {
+        const { inFlow, outFlows, location } = formattedData[sourcePoint];
+        const value = { gain: 0, loss: inFlow };
 
-        Object.keys(flows).forEach(toId => {
-            value[flows[toId] > 0 ? 'gain' : 'loss'] += flows[toId];
-
-            // if number too small, ignore it
-            if (Math.abs(flows[toId]) < 50) {
-                return;
-            }
-            const pairKey = [i, Number(toId)].sort((a, b) => a - b).join('-');
-            const sourceCentroid = data[toId].properties.centroid;
-            const gain = Math.sign(flows[toId]);
+        // create source points and arcs:
+        Object.keys(outFlows).forEach((targetPoint) => {
+            value.gain += outFlows[targetPoint];
 
             // add point at arc source
             sources.push({
-                position: sourceCentroid,
-                target: targetCentroid,
-                name: data[toId].properties.name,
+                position: location,
+                target: formattedData[targetPoint].location,
+                name: targetPoint,
                 radius: 3,
-                gain: -gain
+                gain: value.gain,
             });
 
-            // eliminate duplicates arcs
-            if (pairs[pairKey]) {
-                return;
-            }
-
-            pairs[pairKey] = true;
-
             arcs.push({
-                target: gain > 0 ? targetCentroid : sourceCentroid,
-                source: gain > 0 ? sourceCentroid : targetCentroid,
-                value: flows[toId]
+                target: formattedData[targetPoint].location,
+                source: location,
+                value: outFlows[targetPoint],
             });
         });
 
         // add point at arc target
         targets.push({
             ...value,
-            position: [targetCentroid[0], targetCentroid[1], 10],
+            position: location,
             net: value.gain + value.loss,
-            name: county.properties.name
+            name: sourcePoint,
         });
     });
 
@@ -63,11 +46,13 @@ function getLayerData(data) {
     targets.sort((a, b) => Math.abs(b.net) - Math.abs(a.net));
     const sizeScale = scaleLinear()
         .domain([0, Math.abs(targets[0].net)])
-        .range([36, 400]);
+        .range([3, 10]);
 
-    targets.forEach(pt => {
+    targets.forEach((pt) => {
         pt.radius = Math.sqrt(sizeScale(Math.abs(pt.net)));
     });
 
-    return {arcs, targets, sources};
+    return { arcs, targets, sources };
 }
+
+export default getArcLayerProps;

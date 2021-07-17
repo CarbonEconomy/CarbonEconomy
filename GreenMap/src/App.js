@@ -5,15 +5,17 @@ import {StaticMap} from "react-map-gl"
 
 import {BrushingExtension} from '@deck.gl/extensions';
 import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
-import {fetchCsvData} from "./dataLoaders/LocationsLoader"
+import {fetchArcData, fetchHexagonData, getJson} from "./dataLoaders/LocationsLoader"
 import {generateRandomGreenCredits} from "./utils/MockDataUtils/MockData";
 import MapContent from "./pages/MapContent";
+import getArcLayerProps from "./dataLoaders/BrushingDataLoader";
 
 
 const brushingExtension = new BrushingExtension();
 
 const App = () => {
-    const [data, setData] = useState(null);
+    const [hexagonData, setHexagonData] = useState(null);
+    const [arcData, setArcData] = useState(null);
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
     const [mockCredits, setMockCredits] = useState(null)
 
@@ -27,15 +29,29 @@ const App = () => {
         });
     };
 
-    async function fetchData() {
-        let data = await fetchCsvData()
-        setMockCredits(await generateRandomGreenCredits(data, 1000))
-        setData(data)
+
+
+
+    async function fetchHexagonLayerData() {
+        let hexagonData = await fetchHexagonData()
+        setMockCredits(await generateRandomGreenCredits(hexagonData, 1000))
+        setHexagonData(hexagonData)
+    }
+
+    async function fetchArcLayerData() {
+        let arcData = await fetchArcData()
+        console.log("=== arcData", arcData)
+        const layerRequirements = getArcLayerProps(arcData)
+        setArcData(layerRequirements)
     }
 
     //loadfdata
     useEffect(() => {
-        fetchData()
+        fetchHexagonLayerData()
+    }, []);
+
+    useEffect(() => {
+        fetchArcLayerData()
     }, []);
 
     //resize
@@ -48,13 +64,15 @@ const App = () => {
 
     return (
         <div className="App">
-            {(mockCredits === null || data === null)
+            {(mockCredits === null || hexagonData === null)
                 ? <p> loading spinner ... </p>
                 : <MapContent
                     viewport={viewport}
                     layers={renderLayers({
-                        hexagonData: data,
-                        arcData: mockCredits
+                        hexagonData: hexagonData,
+                        arcData: mockCredits,
+                        brushingData: arcData,
+                        brushingExtension: brushingExtension
                     })}/>
             }
         </div>
