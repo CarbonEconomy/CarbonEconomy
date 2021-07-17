@@ -41,6 +41,8 @@ class _HomeViewState extends State<HomeView> {
   int credits = 0;
   UserReward userReward =
       UserReward(userId: "1", treesDonated: 0, rewardIds: []);
+  int profileIndex = 0;
+
   late StreamSubscription _userRewardsSubscription;
   late StreamSubscription _creditsSubscription;
 
@@ -207,6 +209,14 @@ class _HomeViewState extends State<HomeView> {
     await _fetchCredits();
   }
 
+  Function() profileCreateOnSelect(int index) {
+    return () {
+      setState(() {
+        profileIndex = index;
+      });
+    };
+  }
+
   Widget buildAppBar(int index) {
     switch (index) {
       case 0:
@@ -305,7 +315,8 @@ class _HomeViewState extends State<HomeView> {
           top: 245.0,
           child: ConstrainedBox(
             child: SingleChildScrollView(
-              child: ProfileView(userReward, credits, _rewards),
+              child: ProfileView(profileIndex, profileCreateOnSelect,
+                  userReward, credits, _rewards),
             ),
             constraints: BoxConstraints(maxHeight: height - 295),
           ),

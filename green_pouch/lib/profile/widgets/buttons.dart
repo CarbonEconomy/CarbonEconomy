@@ -8,19 +8,29 @@ class Button {
 }
 
 class MyButton extends StatelessWidget {
+  Button button;
+  Function() onPress;
+
+  MyButton(this.button, this.onPress);
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(30),
+      child: SizedBox(
+        width: 110,
+        height: 40,
         child: TextButton(
           style: TextButton.styleFrom(
-            padding: const EdgeInsets.all(16.0),
-            primary: Colors.black,
-            textStyle: const TextStyle(fontSize: 20),
-            backgroundColor: Colors.blue,
+            primary: button.selected ? Colors.white : Color(0xFFC5C5C5),
+            textStyle:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            backgroundColor: button.selected ? Colors.blue : Colors.transparent,
           ),
-          onPressed: () {},
-          child: const Text('Rewards'),
-        ));
+          onPressed: onPress,
+          child: Text(button.title),
+        ),
+      ),
+    );
   }
 }

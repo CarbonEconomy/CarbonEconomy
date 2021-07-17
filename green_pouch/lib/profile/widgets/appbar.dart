@@ -53,6 +53,7 @@ class ProfileAppBar extends StatelessWidget {
             ),
           ),
           Container(
+            padding: EdgeInsets.only(top: 40),
             alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +77,9 @@ class ProfileAppBar extends StatelessWidget {
                     fontSize: 23,
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -91,6 +95,7 @@ class ProfileAppBar extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     )
                   ],
