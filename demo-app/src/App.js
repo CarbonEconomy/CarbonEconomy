@@ -6,28 +6,7 @@ import GoogleMapReact from 'google-map-react';
 import { Transaction } from './Transaction';
 import axios from 'axios';
 
-const MOCK_RESPONSE = [
-  {
-    route: "CAR",
-    credits: 0,
-  },
-  {
-    route: "HYBRID_CAR",
-    credits: 14,
-  },
-  {
-    route: "ELECTRIC_CAR",
-    credits: 33,
-  },
-  {
-    route: "BIKE",
-    credits: 23,
-  },
-  {
-    route: "BICYCLE",
-    credits: 88
-  }
-]
+const BASE_URL = "https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,7 +18,7 @@ function App() {
   const [route, setRoute] = useState("CAR");
   const [routes, setRoutes] = useState([]);
 
-  const [response, setResponse] = useState(MOCK_RESPONSE);
+  const [response, setResponse] = useState([]);
 
   useEffect(() => {
     return onAuthUIStateChange((nextAuthState, authData) => {
@@ -61,6 +40,21 @@ function App() {
       setEnd(coords)
     }
     console.log(coords)
+  }
+
+  const onCalculate = async () => {
+    const req = {
+      start,
+      end,
+      routes
+    }
+
+    try {
+      const response = await axios.post(`${BASE_URL}/emissions`, req)
+      setResponse(response.data)
+    } catch (e) {
+      alert("calculation failed")
+    }
   }
 
   const onTransaction = async (data) => {
@@ -85,7 +79,7 @@ function App() {
       description
     }
     try {
-      await axios.post("https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev/transaction", body)
+      await axios.post(`${BASE_URL}/transaction`, body)
       alert("successful transaction")
     } catch (e) {
       alert("transaction failed")
@@ -129,6 +123,7 @@ function App() {
             </Grid>
             <Grid item xs={10}>
               {routes.map((r) => <Chip
+                key={r}
                 style={{ padding: 10, marginTop: 10, marginRight: 10 }}
                 clickable
                 label={r}
@@ -138,7 +133,7 @@ function App() {
             </Grid>
           </Grid>
         </Paper>
-        <Button style={{ height: 50, marginTop: 20, marginBottom: 20 }} variant="contained" color="primary" fullWidth>CALCULATE EMISSIONS</Button>
+        <Button onClick={onCalculate} style={{ height: 50, marginTop: 20, marginBottom: 20 }} variant="contained" color="primary" fullWidth>CALCULATE EMISSIONS</Button>
 
         {response.length > 0 && <Transaction response={response} onTransaction={onTransaction} />}
 

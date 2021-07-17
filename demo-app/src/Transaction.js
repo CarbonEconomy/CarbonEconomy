@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 export function Transaction(props) {
     const routes = props.response;
     routes.sort((a, b) => b.credits - a.credits)
-
+    console.log(routes)
     const [selectedRoute, setSelected] = useState(routes[0])
     const [userId, setUserId] = useState("");
 
@@ -30,8 +30,14 @@ export function Transaction(props) {
 
                 }}>
                 <Typography variant="h6">{route.route}</Typography>
-                <Typography style={{ display: "inline" }} variant="h6">Savings: {"  "}</Typography>
-                <Typography style={{ color: "#2DDA93", display: "inline" }} variant="h6"> {route.credits}</Typography>
+                <Typography style={{ display: "inline" }} variant="h6">Emissions: {"  "}</Typography>
+                <Typography style={{ color: route.carbonEmissions > 0 ? "red" : "", display: "inline" }} variant="h6"> {route.carbonEmissions}</Typography>
+                <br />
+                <Typography style={{ display: "inline" }} variant="h6">Emissions Saved: {"  "}</Typography>
+                <Typography style={{ color: route.carbonEmissionsSaved > 0 ? "#2DDA93" : "", display: "inline" }} variant="h6"> {route.carbonEmissionsSaved}</Typography>
+                <br />
+                <Typography style={{ display: "inline" }} variant="h6">Credits: {"  "}</Typography>
+                <Typography style={{ color: route.credits > 0 ? "#2DDA93" : "", display: "inline" }} variant="h6"> {route.credits}</Typography>
             </div>
         ))}
 
