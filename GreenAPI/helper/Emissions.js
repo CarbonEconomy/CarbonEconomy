@@ -80,7 +80,7 @@ const getHaversineDistance = (start, end) => {
 };
 
 const emissionsToCredits = (emissions) => {
-  return Math.floor(emissions);
+  return Math.floor(emissions / 100);
 };
 
 const getLocalDeliveryEmissions = (routes, distance) => {
