@@ -4,21 +4,21 @@ const haversine = require("haversine");
 
 // Estimated emissions in g CO2/km
 const localDeliveryEmissions = {
-  CAR: 200,
-  DIESEL_CAR: 300,
-  HYBRID_CAR: 175,
-  ELECTRIC_CAR: 150,
-  TRUCK: 400,
-  VAN: 300,
-  BIKE: 175,
-  E_SCOOTER: 50,
-  BICYCLE: 0,
-  WALKER: 0,
+  CAR: 174.31,
+  DIESEL_CAR: 168.43,
+  HYBRID_CAR: 119.52,
+  ELECTRIC_CAR: 71,
+  TRUCK: 500,
+  VAN: 240.17,
+  BIKE: 113.55,
+  E_SCOOTER: 75,
+  BICYCLE: 25,
+  WALKER: 50,
 };
 
 const globalDeliveryEmissions = {
   SHIP: 50,
-  AIR: 300,
+  AIR: 251,
 };
 
 const ORS_KEY = "5b3ce3597851110001cf624800c459b3b7a941b6a526cdf50abe85bd";
