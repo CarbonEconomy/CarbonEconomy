@@ -11,4 +11,12 @@ class Transaction {
         toID: "${json["toID"]}",
         amount: json["amount"]);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "fromID": fromID,
+      "toID": toID,
+      "amount": amount,
+    };
+  }
 }

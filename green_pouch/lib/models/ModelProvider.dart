@@ -24,7 +24,7 @@ export 'UserReward.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "4f0feb8216e0175face3987ad2b1b063";
+  String version = "347b1a98f8d48e4d8337eb4043d90282";
   @override
   List<ModelSchema> modelSchemas = [Reward.schema, UserReward.schema];
   static final ModelProvider _instance = ModelProvider();

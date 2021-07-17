@@ -40,6 +40,10 @@ List<Food> MOCK_FOOD = [
 ];
 
 class FavouritesView extends StatelessWidget {
+  Function() onDonate;
+
+  FavouritesView(this.onDonate);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,7 +53,7 @@ class FavouritesView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           VerticalPad(20),
-          BoxList(),
+          BoxList(onDonate),
           VerticalPad(20),
           Title("Shopping"),
           VerticalPad(16.0),

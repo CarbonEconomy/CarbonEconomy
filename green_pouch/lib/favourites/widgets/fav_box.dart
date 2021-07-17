@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:green_pouch/my_colours.dart';
 
 class BoxList extends StatefulWidget {
+  Function() onDonate;
+
+  BoxList(this.onDonate);
+
   @override
   State<StatefulWidget> createState() {
-    return BoxListState();
+    return BoxListState(onDonate);
   }
 }
 
 class BoxListState extends State<BoxList> {
+  Function() onDonate;
   int index = 0;
+
+  BoxListState(this.onDonate);
 
   Function() createOnTapFn(int idx) {
     return () {
@@ -30,7 +37,14 @@ class BoxListState extends State<BoxList> {
               icon: Icons.favorite,
               text: 'DONATE',
               selected: index == 0,
-              onTap: createOnTapFn(0)),
+              onTap: () async {
+                var trees = await onDonate();
+                setState(() {
+                  index = 0;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Donated $trees trees")));
+              }),
           ToggleBox(
             icon: Icons.attach_money,
             text: 'SHOPPING',

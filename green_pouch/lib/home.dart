@@ -16,6 +16,9 @@ import 'package:http/http.dart' as http;
 
 import 'models/ModelProvider.dart';
 
+var TRANSACTION_URI = Uri.parse(
+    "https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev/transaction");
+
 class HomeView extends StatefulWidget {
   AuthUser user;
   Function logout;
@@ -36,8 +39,10 @@ class _HomeViewState extends State<HomeView> {
 
   List<Reward> _rewards = [];
   int credits = 0;
-  UserReward? userReward;
-  late StreamSubscription _subscription;
+  UserReward userReward =
+      UserReward(userId: "1", treesDonated: 0, rewardIds: []);
+  late StreamSubscription _userRewardsSubscription;
+  late StreamSubscription _creditsSubscription;
 
   _HomeViewState(this._user, this.logout);
 
@@ -49,21 +54,25 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _userRewardsSubscription.cancel();
+    _creditsSubscription.cancel();
     super.dispose();
   }
 
   Future<void> _initializeApp() async {
-    await _fetchRewards();
-    await _fetchCredits();
-
-    _subscription =
+    _userRewardsSubscription =
         Amplify.DataStore.observe(UserReward.classType).listen((event) {
       _fetchUserReward();
     });
 
-    await _fetchUserReward();
+    _creditsSubscription =
+        Stream.periodic(Duration(seconds: 2)).listen((event) {
+      _fetchCredits();
+    });
 
+    await _fetchRewards();
+    await _fetchCredits();
+    await _fetchUserReward();
     setState(() {
       _isLoading = false;
     });
@@ -71,10 +80,9 @@ class _HomeViewState extends State<HomeView> {
 
   Future<void> _fetchRewards() async {
     try {
-      List<Reward> updatedTodos =
-          await Amplify.DataStore.query(Reward.classType);
+      List<Reward> rewards = await Amplify.DataStore.query(Reward.classType);
       setState(() {
-        _rewards = updatedTodos;
+        _rewards = rewards;
       });
     } catch (e) {
       print('An error occurred while querying Rewards: $e');
@@ -82,8 +90,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _fetchCredits() async {
-    var res = await http.get(Uri.parse(
-        'https://fv1au9jx9a.execute-api.us-east-1.amazonaws.com/dev/transaction'));
+    var res = await http.get(TRANSACTION_URI);
 
     List<Transaction> transactions = jsonDecode(res.body)
         .map<Transaction>((x) => Transaction.fromJson(x))
@@ -101,6 +108,7 @@ class _HomeViewState extends State<HomeView> {
 
     setState(() {
       credits = received - used;
+      print("User has $credits credits");
     });
   }
 
@@ -111,7 +119,7 @@ class _HomeViewState extends State<HomeView> {
 
     if (userRewards.length == 0) {
       UserReward userReward =
-          UserReward(userId: _user.username, treesDonated: 0, Rewards: []);
+          UserReward(userId: _user.username, treesDonated: 0, rewardIds: []);
       await Amplify.DataStore.save(userReward);
 
       setState(() {
@@ -122,6 +130,81 @@ class _HomeViewState extends State<HomeView> {
         this.userReward = userRewards[0];
       });
     }
+  }
+
+  Future<int> onDonate() async {
+    int trees = credits ~/ 100;
+    if (trees <= 0) {
+      return 0;
+    }
+    Transaction transaction = Transaction(
+        fromID: _user.username, toID: "CARBON_ECONOMY", amount: trees * 100);
+
+    var description = Map();
+    description["type"] = "TREE_DONATION";
+    description["treesDonated"] = trees;
+
+    var json = transaction.toJson();
+    json["description"] = description;
+
+    print(jsonEncode(json));
+
+    Map<String, String> headers = Map();
+    headers["Content-Type"] = "application/json";
+
+    var res = await http.post(TRANSACTION_URI,
+        headers: headers, body: jsonEncode(json));
+    print(res.body);
+    if (res.statusCode != 201) {
+      return 0;
+    }
+    var updatedUserReward =
+        userReward.copyWith(treesDonated: userReward.treesDonated + trees);
+
+    try {
+      await Amplify.DataStore.save(updatedUserReward);
+    } catch (e) {
+      print("An error occured while saving user reward: $e");
+    }
+    await _fetchCredits();
+
+    return trees;
+  }
+
+  Future<void> onClaim(Reward reward) async {
+    Transaction transaction = Transaction(
+        fromID: _user.username,
+        toID: "CARBON_ECONOMY",
+        amount: reward.treesRequired * 100);
+
+    var description = Map();
+    description["type"] = "REWARDS_CLAIM";
+    description["reward"] = reward.toJson();
+
+    var json = transaction.toJson();
+    json["description"] = description;
+
+    print(jsonEncode(json));
+
+    Map<String, String> headers = Map();
+    headers["Content-Type"] = "application/json";
+
+    var res = await http.post(TRANSACTION_URI,
+        headers: headers, body: jsonEncode(json));
+    print(res.body);
+    if (res.statusCode != 201) {
+      return;
+    }
+
+    var updatedUserReward =
+        userReward.copyWith(rewardIds: [reward.id, ...userReward.rewardIds]);
+
+    try {
+      await Amplify.DataStore.save(updatedUserReward);
+    } catch (e) {
+      print("An error occured while saving user reward: $e");
+    }
+    await _fetchCredits();
   }
 
   Widget buildAppBar(int index) {
@@ -139,7 +222,7 @@ class _HomeViewState extends State<HomeView> {
         return ProfileAppBar(
           name: _user.username,
           logout: logout,
-          treesDonated: userReward?.treesDonated ?? 0,
+          treesDonated: userReward.treesDonated,
           credits: this.credits,
         );
     }
@@ -192,7 +275,7 @@ class _HomeViewState extends State<HomeView> {
           top: 205.0,
           child: ConstrainedBox(
             child: SingleChildScrollView(
-              child: FavouritesView(),
+              child: FavouritesView(onDonate),
             ),
             constraints: BoxConstraints(maxHeight: height - 255),
           ),
@@ -202,7 +285,7 @@ class _HomeViewState extends State<HomeView> {
           top: 205.0,
           child: ConstrainedBox(
             child: SingleChildScrollView(
-              child: SearchView(_rewards),
+              child: SearchView(_rewards, this.credits, onClaim),
             ),
             constraints: BoxConstraints(maxHeight: height - 255),
           ),
@@ -222,7 +305,7 @@ class _HomeViewState extends State<HomeView> {
           top: 245.0,
           child: ConstrainedBox(
             child: SingleChildScrollView(
-              child: ProfileView(),
+              child: ProfileView(userReward, credits, _rewards),
             ),
             constraints: BoxConstraints(maxHeight: height - 295),
           ),

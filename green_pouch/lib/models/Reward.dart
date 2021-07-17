@@ -28,7 +28,6 @@ class Reward extends Model {
   final String? _pictureUrl;
   final String? _organisation;
   final int? _treesRequired;
-  final String? _userrewardID;
 
   @override
   getInstanceType() => classType;
@@ -62,24 +61,23 @@ class Reward extends Model {
     }
   }
   
-  int? get treesRequired {
-    return _treesRequired;
+  int get treesRequired {
+    try {
+      return _treesRequired!;
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+    }
   }
   
-  String? get userrewardID {
-    return _userrewardID;
-  }
+  const Reward._internal({required this.id, required title, required pictureUrl, required organisation, required treesRequired}): _title = title, _pictureUrl = pictureUrl, _organisation = organisation, _treesRequired = treesRequired;
   
-  const Reward._internal({required this.id, required title, required pictureUrl, required organisation, treesRequired, userrewardID}): _title = title, _pictureUrl = pictureUrl, _organisation = organisation, _treesRequired = treesRequired, _userrewardID = userrewardID;
-  
-  factory Reward({String? id, required String title, required String pictureUrl, required String organisation, int? treesRequired, String? userrewardID}) {
+  factory Reward({String? id, required String title, required String pictureUrl, required String organisation, required int treesRequired}) {
     return Reward._internal(
       id: id == null ? UUID.getUUID() : id,
       title: title,
       pictureUrl: pictureUrl,
       organisation: organisation,
-      treesRequired: treesRequired,
-      userrewardID: userrewardID);
+      treesRequired: treesRequired);
   }
   
   bool equals(Object other) {
@@ -94,8 +92,7 @@ class Reward extends Model {
       _title == other._title &&
       _pictureUrl == other._pictureUrl &&
       _organisation == other._organisation &&
-      _treesRequired == other._treesRequired &&
-      _userrewardID == other._userrewardID;
+      _treesRequired == other._treesRequired;
   }
   
   @override
@@ -110,21 +107,19 @@ class Reward extends Model {
     buffer.write("title=" + "$_title" + ", ");
     buffer.write("pictureUrl=" + "$_pictureUrl" + ", ");
     buffer.write("organisation=" + "$_organisation" + ", ");
-    buffer.write("treesRequired=" + (_treesRequired != null ? _treesRequired!.toString() : "null") + ", ");
-    buffer.write("userrewardID=" + "$_userrewardID");
+    buffer.write("treesRequired=" + (_treesRequired != null ? _treesRequired!.toString() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Reward copyWith({String? id, String? title, String? pictureUrl, String? organisation, int? treesRequired, String? userrewardID}) {
+  Reward copyWith({String? id, String? title, String? pictureUrl, String? organisation, int? treesRequired}) {
     return Reward(
       id: id ?? this.id,
       title: title ?? this.title,
       pictureUrl: pictureUrl ?? this.pictureUrl,
       organisation: organisation ?? this.organisation,
-      treesRequired: treesRequired ?? this.treesRequired,
-      userrewardID: userrewardID ?? this.userrewardID);
+      treesRequired: treesRequired ?? this.treesRequired);
   }
   
   Reward.fromJson(Map<String, dynamic> json)  
@@ -132,11 +127,10 @@ class Reward extends Model {
       _title = json['title'],
       _pictureUrl = json['pictureUrl'],
       _organisation = json['organisation'],
-      _treesRequired = json['treesRequired'],
-      _userrewardID = json['userrewardID'];
+      _treesRequired = json['treesRequired'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'title': _title, 'pictureUrl': _pictureUrl, 'organisation': _organisation, 'treesRequired': _treesRequired, 'userrewardID': _userrewardID
+    'id': id, 'title': _title, 'pictureUrl': _pictureUrl, 'organisation': _organisation, 'treesRequired': _treesRequired
   };
 
   static final QueryField ID = QueryField(fieldName: "reward.id");
@@ -144,7 +138,6 @@ class Reward extends Model {
   static final QueryField PICTUREURL = QueryField(fieldName: "pictureUrl");
   static final QueryField ORGANISATION = QueryField(fieldName: "organisation");
   static final QueryField TREESREQUIRED = QueryField(fieldName: "treesRequired");
-  static final QueryField USERREWARDID = QueryField(fieldName: "userrewardID");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Reward";
     modelSchemaDefinition.pluralName = "Rewards";
@@ -182,14 +175,8 @@ class Reward extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Reward.TREESREQUIRED,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Reward.USERREWARDID,
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
   });
 }

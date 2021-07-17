@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:green_pouch/models/Reward.dart';
-import 'package:green_pouch/my_colours.dart';
+
+import '../../my_colours.dart';
 
 class RewardsList extends StatelessWidget {
   List<Reward> rewards;
 
-  RewardsList(this.rewards);
+  Function(Reward) onClaim;
+  int credits;
+
+  RewardsList(this.rewards, this.credits, this.onClaim);
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    int trees = credits ~/ 100;
 
     return Container(
         height: size.height - 255,
@@ -24,7 +29,7 @@ class RewardsList extends StatelessWidget {
               width: size.width,
               color:
                   index % 2 == 0 ? Color(0XFFC4C4C4).withOpacity(0.07) : null,
-              child: RewardsTile(rewards[index]),
+              child: RewardsTile(rewards[index], trees, onClaim),
             );
           },
         ));
@@ -33,8 +38,12 @@ class RewardsList extends StatelessWidget {
 
 class RewardsTile extends StatelessWidget {
   Reward reward;
+  int treesAvailable;
 
-  RewardsTile(this.reward);
+  Function(Reward) onClaim;
+
+  RewardsTile(this.reward, this.treesAvailable, this.onClaim);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -85,19 +94,37 @@ class RewardsTile extends StatelessWidget {
                       fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 30),
-                Text(
-                  "TREES",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: MyColours.PRIMARY,
-                      fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  "${reward.treesRequired}",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF495566)),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "TREES",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: MyColours.PRIMARY,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          "${reward.treesRequired}",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF495566)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 100,
+                    ),
+                    ElevatedButton(
+                      onPressed: treesAvailable >= reward.treesRequired
+                          ? () => onClaim(reward)
+                          : null,
+                      child: Text("CLAIM"),
+                    ),
+                  ],
                 )
               ],
             )

@@ -87,7 +87,7 @@ class ProfileAppBar extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      "$treesDonated Trees available",
+                      "$treesDonated Trees donated",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,

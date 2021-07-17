@@ -13,182 +13,158 @@
 * permissions and limitations under the License.
 */
 
+// ignore_for_file: public_member_api_docs
+
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-// ignore_for_file: public_member_api_docs
-
-import 'ModelProvider.dart';
 
 /** This is an auto generated class representing the UserReward type in your schema. */
 @immutable
 class UserReward extends Model {
   static const classType = const _UserRewardModelType();
   final String id;
-  final List<Reward>? _Rewards;
   final String? _userId;
   final int? _treesDonated;
+  final List<String>? _rewardIds;
 
   @override
   getInstanceType() => classType;
-
+  
   @override
   String getId() {
     return id;
   }
-
-  List<Reward>? get Rewards {
-    return _Rewards;
-  }
-
+  
   String get userId {
     try {
       return _userId!;
-    } catch (e) {
-      throw new DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString());
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
     }
   }
-
+  
   int get treesDonated {
     try {
       return _treesDonated!;
-    } catch (e) {
-      throw new DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString());
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
     }
   }
-
-  const UserReward._internal(
-      {required this.id, Rewards, required userId, required treesDonated})
-      : _Rewards = Rewards,
-        _userId = userId,
-        _treesDonated = treesDonated;
-
-  factory UserReward(
-      {String? id,
-      List<Reward>? Rewards,
-      required String userId,
-      required int treesDonated}) {
-    return UserReward._internal(
-        id: id == null ? UUID.getUUID() : id,
-        Rewards: Rewards != null ? List<Reward>.unmodifiable(Rewards) : Rewards,
-        userId: userId,
-        treesDonated: treesDonated);
+  
+  List<String> get rewardIds {
+    try {
+      return _rewardIds!;
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+    }
   }
-
+  
+  const UserReward._internal({required this.id, required userId, required treesDonated, required rewardIds}): _userId = userId, _treesDonated = treesDonated, _rewardIds = rewardIds;
+  
+  factory UserReward({String? id, required String userId, required int treesDonated, required List<String> rewardIds}) {
+    return UserReward._internal(
+      id: id == null ? UUID.getUUID() : id,
+      userId: userId,
+      treesDonated: treesDonated,
+      rewardIds: rewardIds != null ? List<String>.unmodifiable(rewardIds) : rewardIds);
+  }
+  
   bool equals(Object other) {
     return this == other;
   }
-
+  
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is UserReward &&
-        id == other.id &&
-        DeepCollectionEquality().equals(_Rewards, other._Rewards) &&
-        _userId == other._userId &&
-        _treesDonated == other._treesDonated;
+      id == other.id &&
+      _userId == other._userId &&
+      _treesDonated == other._treesDonated &&
+      DeepCollectionEquality().equals(_rewardIds, other._rewardIds);
   }
-
+  
   @override
   int get hashCode => toString().hashCode;
-
+  
   @override
   String toString() {
     var buffer = new StringBuffer();
-
+    
     buffer.write("UserReward {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
-    buffer.write("treesDonated=" +
-        (_treesDonated != null ? _treesDonated!.toString() : "null"));
+    buffer.write("treesDonated=" + (_treesDonated != null ? _treesDonated!.toString() : "null") + ", ");
+    buffer.write("rewardIds=" + (_rewardIds != null ? _rewardIds!.toString() : "null"));
     buffer.write("}");
-
+    
     return buffer.toString();
   }
-
-  UserReward copyWith(
-      {String? id, List<Reward>? Rewards, String? userId, int? treesDonated}) {
+  
+  UserReward copyWith({String? id, String? userId, int? treesDonated, List<String>? rewardIds}) {
     return UserReward(
-        id: id ?? this.id,
-        Rewards: Rewards ?? this.Rewards,
-        userId: userId ?? this.userId,
-        treesDonated: treesDonated ?? this.treesDonated);
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      treesDonated: treesDonated ?? this.treesDonated,
+      rewardIds: rewardIds ?? this.rewardIds);
   }
-
-  UserReward.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        _Rewards = json['Rewards'] is List
-            ? (json['Rewards'] as List)
-                .where((e) => e?['serializedData'] != null)
-                .map((e) => Reward.fromJson(
-                    new Map<String, dynamic>.from(e['serializedData'])))
-                .toList()
-            : null,
-        _userId = json['userId'],
-        _treesDonated = json['treesDonated'];
-
+  
+  UserReward.fromJson(Map<String, dynamic> json)  
+    : id = json['id'],
+      _userId = json['userId'],
+      _treesDonated = json['treesDonated'],
+      _rewardIds = json['rewardIds']?.cast<String>();
+  
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'Rewards': _Rewards?.map((e) => e.toJson())?.toList(),
-        'userId': _userId,
-        'treesDonated': _treesDonated
-      };
+    'id': id, 'userId': _userId, 'treesDonated': _treesDonated, 'rewardIds': _rewardIds
+  };
 
   static final QueryField ID = QueryField(fieldName: "userReward.id");
-  static final QueryField REWARDS = QueryField(
-      fieldName: "Rewards",
-      fieldType: ModelFieldType(ModelFieldTypeEnum.model,
-          ofModelName: (Reward).toString()));
   static final QueryField USERID = QueryField(fieldName: "userId");
   static final QueryField TREESDONATED = QueryField(fieldName: "treesDonated");
-  static var schema =
-      Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+  static final QueryField REWARDIDS = QueryField(fieldName: "rewardIds");
+  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UserReward";
     modelSchemaDefinition.pluralName = "UserRewards";
-
+    
     modelSchemaDefinition.authRules = [
-      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
-        ModelOperation.CREATE,
-        ModelOperation.UPDATE,
-        ModelOperation.DELETE,
-        ModelOperation.READ
-      ])
+      AuthRule(
+        authStrategy: AuthStrategy.PUBLIC,
+        operations: [
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE,
+          ModelOperation.DELETE,
+          ModelOperation.READ
+        ])
     ];
-
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
-
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
-        key: UserReward.REWARDS,
-        isRequired: true,
-        ofModelName: (Reward).toString(),
-        associatedKey: Reward.USERREWARDID));
-
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: UserReward.USERID,
-        isRequired: true,
-        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
-
+      key: UserReward.USERID,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: UserReward.TREESDONATED,
-        isRequired: true,
-        ofType: ModelFieldType(ModelFieldTypeEnum.int)));
+      key: UserReward.TREESDONATED,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: UserReward.REWARDIDS,
+      isRequired: true,
+      isArray: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+    ));
   });
 }
 
 class _UserRewardModelType extends ModelType<UserReward> {
   const _UserRewardModelType();
-
+  
   @override
   UserReward fromJson(Map<String, dynamic> jsonData) {
     return UserReward.fromJson(jsonData);
