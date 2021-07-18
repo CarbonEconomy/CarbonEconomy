@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useLayers} from "./layers/UseLayers";
-import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
+import {INITIAL_VIEWPORT_CBD} from "./utils/MapUtils/Viewports";
 import {fetchTransactionsFlow} from "./dataLoaders/LocationsLoader"
 import MapContent from "./pages/MapContent";
+import LoadingPage from "./pages/LoadingPage";
 
 
 const App = () => {
-    const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
+    const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
     const [transactionsFlow, setTransactionsFlow] = useState(null)
 
     const handleResize = () => {
@@ -42,7 +43,7 @@ const App = () => {
     return (
         <div className="App">
             {(transactionsFlow === null)
-                ? <p> loading spinner ... </p>
+                ? <LoadingPage message={"nice"}/>
                 : <MapContent
                     viewport={viewport}
                     layers={layers}/>
