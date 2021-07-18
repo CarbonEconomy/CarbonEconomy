@@ -61,13 +61,17 @@ class Reward extends Model {
     }
   }
   
-  int? get treesRequired {
-    return _treesRequired;
+  int get treesRequired {
+    try {
+      return _treesRequired!;
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+    }
   }
   
-  const Reward._internal({required this.id, required title, required pictureUrl, required organisation, treesRequired}): _title = title, _pictureUrl = pictureUrl, _organisation = organisation, _treesRequired = treesRequired;
+  const Reward._internal({required this.id, required title, required pictureUrl, required organisation, required treesRequired}): _title = title, _pictureUrl = pictureUrl, _organisation = organisation, _treesRequired = treesRequired;
   
-  factory Reward({String? id, required String title, required String pictureUrl, required String organisation, int? treesRequired}) {
+  factory Reward({String? id, required String title, required String pictureUrl, required String organisation, required int treesRequired}) {
     return Reward._internal(
       id: id == null ? UUID.getUUID() : id,
       title: title,
@@ -171,7 +175,7 @@ class Reward extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Reward.TREESREQUIRED,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
   });

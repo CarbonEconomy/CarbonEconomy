@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:green_pouch/login/signup.dart';
 
+import '../my_colours.dart';
 import 'login.dart';
 
 class LoginView extends StatefulWidget {
@@ -32,8 +33,16 @@ class LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return showLogin
-        ? LoginScreen(loginUser, showSignUpScreen)
-        : SignUpScreen(loginUser, showLoginScreen);
+    return Scaffold(
+      backgroundColor: MyColours.BACKGROUND,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+            child: showLogin
+                ? LoginScreen(loginUser, showSignUpScreen)
+                : SignUpScreen(loginUser, showLoginScreen)),
+      ),
+    );
   }
 }

@@ -6,10 +6,14 @@ class ProfileAppBar extends StatelessWidget {
   String name;
   int treesDonated;
   int credits;
+  dynamic logout;
 
   static const Color _translucentWhite = Color.fromRGBO(255, 255, 255, 0.15);
   ProfileAppBar(
-      {required this.name, required this.treesDonated, required this.credits});
+      {required this.name,
+      required this.treesDonated,
+      required this.credits,
+      required this.logout});
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +53,18 @@ class ProfileAppBar extends StatelessWidget {
             ),
           ),
           Container(
+            padding: EdgeInsets.only(top: 40),
             alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage("graphics/cat.jpg"),
+                InkWell(
+                  onTap: logout,
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage("graphics/cat.jpg"),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -69,6 +77,9 @@ class ProfileAppBar extends StatelessWidget {
                     fontSize: 23,
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -80,10 +91,11 @@ class ProfileAppBar extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      "$treesDonated Trees available",
+                      "$treesDonated Trees donated",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     )
                   ],
