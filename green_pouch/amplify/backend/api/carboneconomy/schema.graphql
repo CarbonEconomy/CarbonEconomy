@@ -1,7 +1,15 @@
+type UserReward @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  treesDonated: Int!
+  rewardIds: [String!]!
+}
+
 type Reward @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   pictureUrl: String!
   organisation: String!
-  treesRequired: Int
+  treesRequired: Int!
 }
+ 

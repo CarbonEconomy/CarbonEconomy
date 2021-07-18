@@ -5,11 +5,13 @@ import 'package:green_pouch/search/widgets/list.dart';
 
 class SearchView extends StatelessWidget {
   final List<Reward> _rewards;
+  int credits;
+  Function(Reward) onClaim;
 
-  SearchView(this._rewards);
+  SearchView(this._rewards, this.credits, this.onClaim);
 
   @override
   Widget build(BuildContext context) {
-    return RewardsList(_rewards);
+    return RewardsList(_rewards, this.credits, this.onClaim);
   }
 }
