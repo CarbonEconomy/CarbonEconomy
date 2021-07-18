@@ -1,18 +1,24 @@
 import {getJson} from "./LocationsLoader";
 
 const verifyTransactionFieldsPresent = (transaction) => {
-    if (!(transaction && transaction.amount && transaction.description)) return false
+    const hasCorrectOuterFields = (transaction && transaction.amount && transaction.description)
+    console.log(">>> verifyFields", transaction)
+    console.log(">>> hasCorrectOuterFields?", hasCorrectOuterFields)
+    if (!hasCorrectOuterFields) return false
     const description = transaction.description;
-    return (description.start
+    const hasCorrectDescFields =  (description.start
         && description.start.lat
         && description.start.lng
         && description.end
         && description.end.lat
         && description.end.lng)
+    console.log(">>> hasCorrectDescFields?", hasCorrectDescFields)
+    return hasCorrectDescFields
 };
 
 // creates objects for Brushing Extension:
 const parseApiData = (json) => {
+    console.log(">> parseApiData json arg", json )
     const locations = {};
 
     json.forEach((transaction) => {
@@ -49,6 +55,7 @@ const parseApiData = (json) => {
             locations[endPoint].inFlow -= amount;
         }
     });
+    console.log(">>> after parsing, locations:", locations)
     return locations;
 };
 
