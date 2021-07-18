@@ -1,4 +1,4 @@
-let faker = require('faker')
+import faker from 'faker'
 
 function createCoordinate(lng, lat) { //
     return {lng: lng, lat: lat}
