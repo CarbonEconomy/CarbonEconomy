@@ -1,31 +1,15 @@
-import {csv} from "d3-fetch";
+import {csv, json} from "d3-fetch";
+import parseApiData from "./ApiParser";
+import {generateRandomTransactions} from "../utils/MockDataUtils/MockData";
 
-const DATA_URL = "./SingaporeLocations_.csv";
+const SINGAPORE_LOCATIONS_DATA_URL = "./SingaporeLocations_.csv";
 
-export async function fetchCsvData() {
-    const result = await csv(DATA_URL);
-    let points = result.map(function (d) {
-        return {position: [+d.lng, +d.lat]};
-    });
-    return points
+export async function fetchTransactionsFlow() {
+    const csvContent = (await csv(SINGAPORE_LOCATIONS_DATA_URL))
+        .map(function (d) {
+            return {position: [+d.lng, +d.lat]};
+        });
+    const transactions = await generateRandomTransactions(csvContent, 1000)
+    return parseApiData(transactions);
 }
-
-export const getPoints = async () => {
-    let points = await fetchCsvData()
-    console.log("XXX points", points)
-    return points
-}
-
-export function getCsvData() {
-    const result = csv(DATA_URL);
-    let points = result.map(function (d) {
-        return {position: [+d.lng, +d.lat]};
-    });
-    return points
-}
-
-export function fetchData(setterFn) {
-    setterFn(fetchCsvData());
-}
-
 

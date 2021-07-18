@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import DeckGL, { MapController } from "deck.gl";
-import { renderLayers } from "./utils/RenderLayers";
-import {StaticMap}from "react-map-gl"
-
-import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
-import {fetchCsvData} from "./dataLoaders/LocationsLoader"
-import {generateRandomGreenCredits} from "./utils/MockDataUtils/MockData";
+import React, {useEffect, useState} from "react";
+import {useLayers} from "./layers/UseLayers";
+import {INITIAL_VIEWPORT_CBD} from "./utils/MapUtils/Viewports";
+import {fetchTransactionsFlow} from "./dataLoaders/LocationsLoader"
 import MapContent from "./pages/MapContent";
+import LoadingPage from "./pages/LoadingPage";
+
 
 const App = () => {
-    const [data, setData] = useState(null);
-    const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
-    const [mockCredits, setMockCredits] = useState([])
+    const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
+    const [transactionsFlow, setTransactionsFlow] = useState(null)
 
     const handleResize = () => {
         setViewport((v) => {
@@ -23,21 +20,13 @@ const App = () => {
         });
     };
 
-    async function generateMockCredits(data) {
-        let credits = generateRandomGreenCredits(data,1000)
-        console.log("XX testing Credit Creation:", credits)
-        setMockCredits(credits)
+    async function fetchTransactionsFlowData() {
+        let mockTransactionsFlow = await fetchTransactionsFlow()
+        setTransactionsFlow(mockTransactionsFlow)
     }
 
-    async function fetchData(){
-        let data = await fetchCsvData()
-        setData(data)
-        setMockCredits(await generateMockCredits(data))
-    }
-
-    //loadfdata
     useEffect(() => {
-        fetchData()
+        fetchTransactionsFlowData()
     }, []);
 
     //resize
@@ -47,13 +36,18 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const layers = renderLayers({
-        data: data
-    })
 
+    const layers = useLayers({
+        transactionsFlow: transactionsFlow,
+    })
     return (
         <div className="App">
-            <MapContent viewport={viewport} layers={layers}/>
+            {(transactionsFlow === null)
+                ? <LoadingPage message={"nice"}/>
+                : <MapContent
+                    viewport={viewport}
+                    layers={layers}/>
+            }
         </div>
     );
 };
