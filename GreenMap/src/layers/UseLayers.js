@@ -55,9 +55,7 @@ export function useLayers(props) {
             },
             elevationAggregation: 'SUM'
         })
-
-    const sourcesLayer = sources && new ScatterplotLayer({
-        id: "sources",
+const sourcesLayer = sources && new ScatterplotLayer({ id: "sources",
         data: sources,
         brushingRadius: BRUSH_RADIUS,
         brushingEnabled: ENABLE_BRUSHING,

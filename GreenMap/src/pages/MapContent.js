@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import DeckGL, {MapController} from 'deck.gl';
 import {StaticMap} from 'react-map-gl';
+import toast from "react-hot-toast";
 
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_DEFAULT_PUBLIC_TOKEN
@@ -19,6 +20,10 @@ function MapContent(props) {
     Net gain: ${object.net}`
         );
     }
+
+    window.setInterval(()=> toast.success("sup", {
+        position:"top-left"
+    }), 2000)
 
     const display = <DeckGL
         layers={layers}
