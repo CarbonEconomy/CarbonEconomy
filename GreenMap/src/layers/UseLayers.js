@@ -17,6 +17,7 @@ const colorRange = [
 const SOURCE_COLOR = [166, 3, 3];
 // transaction in
 const TARGET_COLOR = [35, 184, 40];
+const TRANSPARENT_COLOR = [0,0,0,0];
 const BRUSH_RADIUS = 1000;
 const STROKE_WIDTH = 5;
 const OPACITY = 0.7;
@@ -56,16 +57,16 @@ export function useLayers(props) {
             elevationAggregation: 'SUM'
         })
 
-    const sourcesLayer = sources && new ScatterplotLayer({
-        id: "sources",
-        data: sources,
-        brushingRadius: BRUSH_RADIUS,
-        brushingEnabled: ENABLE_BRUSHING,
-        // only show source points when brushing
-        radiusScale: ENABLE_BRUSHING ? 60 : 0,
-        getFillColor: (d) => (d.gain > 0 ? TARGET_COLOR : SOURCE_COLOR),
-        extensions: [brushingExtension],
-    })
+    // const sourcesLayer = sources && new ScatterplotLayer({
+    //     id: "sources",
+    //     data: sources,
+    //     brushingRadius: BRUSH_RADIUS,
+    //     brushingEnabled: ENABLE_BRUSHING,
+    //     // only show source points when brushing
+    //     radiusScale: 30,
+    //     getFillColor: (d) => (d.gain > 0 ? TARGET_COLOR : TRANSPARENT_COLOR),
+    //     extensions: [brushingExtension],
+    // })
 
     const targetsRingLayer = targets && new ScatterplotLayer({
         id: "targets-ring",
@@ -76,8 +77,8 @@ export function useLayers(props) {
         filled: false,
         brushingEnabled: ENABLE_BRUSHING,
         // only show rings when brushing
-        radiusScale: ENABLE_BRUSHING ? 120 : 0,
-        getLineColor: (d) => (d.net > 0 ? TARGET_COLOR : SOURCE_COLOR),
+        radiusScale: ENABLE_BRUSHING ? 60 : 0,
+        getLineColor: (d) => (d.gain > 0 ? TARGET_COLOR : TRANSPARENT_COLOR),
         extensions: [brushingExtension],
     })
 
@@ -87,8 +88,8 @@ export function useLayers(props) {
         brushingRadius: BRUSH_RADIUS,
         brushingEnabled: ENABLE_BRUSHING,
         pickable: true,
-        radiusScale: 60,
-        getFillColor: (d) => (d.net > 0 ? TARGET_COLOR : SOURCE_COLOR),
+        radiusScale: ENABLE_BRUSHING ? 30 : 0,
+        getFillColor: (d) => (d.gain > 0 ? TARGET_COLOR : TRANSPARENT_COLOR),
         extensions: [brushingExtension],
     })
 
@@ -99,17 +100,19 @@ export function useLayers(props) {
         OPACITY,
         brushingRadius: BRUSH_RADIUS,
         brushingEnabled: ENABLE_BRUSHING,
-        getSourcePosition: (d) => d.source,
-        getTargetPosition: (d) => d.target,
-        getSourceColor: SOURCE_COLOR,
-        getTargetColor: TARGET_COLOR,
+        getSourcePosition: (d) => d.target,
+        getTargetPosition: (d) => d.source,
+        getSourceColor: TARGET_COLOR,
+        getTargetColor: SOURCE_COLOR,
         extensions: [brushingExtension],
     })
 
 
-    return [hexagonLayer,
-        sourcesLayer,
+    return [
+        hexagonLayer,
+        // sourcesLayer,
         targetsLayer,
         targetsRingLayer,
-        creditFlowsArcLayer]
+        creditFlowsArcLayer
+    ]
 }
