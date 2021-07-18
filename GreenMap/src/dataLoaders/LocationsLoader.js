@@ -1,16 +1,15 @@
 import {csv, json} from "d3-fetch";
 import parseApiData from "./ApiParser";
+import {generateRandomTransactions} from "../utils/MockDataUtils/MockData";
 
-const HEXAGON_DATA_URL = "./SingaporeLocations_.csv";
-const BRUSHING_DATA_URL = "./sampleApiResponse.json"
+const SINGAPORE_LOCATIONS_DATA_URL = "./SingaporeLocations_.csv";
 
-export async function fetchHexagonData() {
-    const result = await csv(HEXAGON_DATA_URL);
-    return result.map(function (d) {
-        return {position: [+d.lng, +d.lat]};
-    })
+export async function fetchTransactionsFlow() {
+    const csvContent = (await csv(SINGAPORE_LOCATIONS_DATA_URL))
+        .map(function (d) {
+            return {position: [+d.lng, +d.lat]};
+        });
+    const transactions = await generateRandomTransactions(csvContent, 1000)
+    return parseApiData(transactions);
 }
 
-export async function fetchArcData() {
-    return parseApiData( await json(BRUSHING_DATA_URL))
-}

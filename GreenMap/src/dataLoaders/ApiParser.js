@@ -1,27 +1,22 @@
-import {getJson} from "./LocationsLoader";
-
 const verifyTransactionFieldsPresent = (transaction) => {
     const hasCorrectOuterFields = (transaction && transaction.amount && transaction.description)
-    console.log(">>> verifyFields", transaction)
-    console.log(">>> hasCorrectOuterFields?", hasCorrectOuterFields)
     if (!hasCorrectOuterFields) return false
     const description = transaction.description;
-    const hasCorrectDescFields =  (description.start
+    // ensure correct description fields:
+    return (description.start
         && description.start.lat
         && description.start.lng
         && description.end
         && description.end.lat
         && description.end.lng)
-    console.log(">>> hasCorrectDescFields?", hasCorrectDescFields)
-    return hasCorrectDescFields
 };
 
-// creates objects for Brushing Extension:
-const parseApiData = (json) => {
-    console.log(">> parseApiData json arg", json )
+// parses json transaction data into flow data representing flow of green credits:
+const parseApiData = (transactions) => {
+    console.log("... from api, json for transactions:", transactions)
     const locations = {};
 
-    json.forEach((transaction) => {
+    transactions.forEach((transaction) => {
         if (verifyTransactionFieldsPresent(transaction)) {
             const amount = parseInt(transaction.amount);
             const {start, end} = transaction.description;

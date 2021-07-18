@@ -15,8 +15,8 @@ export const INITIAL_VIEWPORT_ = {
 export const INITIAL_VIEWPORT = {
     width: window.innerWidth,
     height: window.innerHeight,
-    longitude: JURONG_HILL[1],
-    latitude: JURONG_HILL[0],
+    longitude: SELETAR_TOWER[1],
+    latitude: SELETAR_TOWER[0],
     zoom: 10,
     maxZoom: 26,
     pitch: 65,

@@ -21,15 +21,6 @@ function createTransaction(fromID, toID, amount, description) {
     }
 }
 
-// function createTransaction_(startPt, endPt, transferAmount, metadata) {
-//     return {
-//         start: startPt,
-//         end: endPt,
-//         amount: transferAmount,
-//         mode: metadata
-//     }
-// }
-
 const getRandomPoint = async (data) => {
     let points = data
     let point = points[Math.floor(Math.random() * points.length)]
@@ -55,44 +46,19 @@ const getRandomMode = () => {
         "chose 5 day shipping instead of same-day air delivery",
         "delivery by bicycle instead of motorbike"
     ]
-    const idx = Math.floor(Math.random() * messages.length)
-    return messages[idx]
+    const randIdx = Math.floor(Math.random() * messages.length)
+    return messages[randIdx]
 }
 
 const createRandomTransaction = async (data) => {
-    // create random description:
     const [start, end] = await getRandomStartEndPoints(data)
     const mode = getRandomMode()
     const description = createTransactionDescription(start, end, mode)
-    console.log(">> txn description: ", description)
     const fromID = faker.datatype.uuid()
     const toID = faker.datatype.uuid()
-    console.log(">> from ID: %s, toID: %s", fromID, toID)
     const transferAmount = getRandomTransferAmount()
-    const txn = createTransaction(fromID, toID, transferAmount, description)
-    console.log(">> new txn", txn)
-    return txn
+    return createTransaction(fromID, toID, transferAmount, description)
 }
-//
-// const createRandomTransaction_ = async (data) => {
-//     const newTxn = await createRandomTransaction_(data)
-//     // create random description:
-//     const [start, end] = await getRandomStartEndPoints(data)
-//     const mode = getRandomMode()
-//     const description = createTransactionDescription(start, end, mode)
-//     const fromID = faker.datatype.uuid()
-//     const toID = faker.datatype.uuid()
-//     const transferAmount = getRandomTransferAmount()
-//     const txn = createTransaction_(fromID, toID, transferAmount, description)
-//
-//     const transaction = createTransaction(
-//         start,
-//         end,
-//         getRandomTransferAmount(),
-//         getRandomMode()
-//     )
-//     return transaction
-// }
 
 export const generateRandomTransactions = async (data, count) => {
     let credits = []
@@ -100,6 +66,6 @@ export const generateRandomTransactions = async (data, count) => {
         const credit = await createRandomTransaction(data)
         credits.push(credit)
     }
-    console.log("== generateRandomCredits, count(%s)", count, credits)
+    console.log("== generateRandomTransactions, count(%s)", count, credits)
     return credits
 }
