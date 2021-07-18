@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import DeckGL, {MapController} from 'deck.gl';
 import {StaticMap} from 'react-map-gl';
 
@@ -15,8 +15,8 @@ function MapContent(props) {
         return (
             object &&
             `\
-    ${object.name}
-    Net gain: ${object.net}`
+            ${object.name}
+            Net gain: ${object.net}`
         );
     }
 

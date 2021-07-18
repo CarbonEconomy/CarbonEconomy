@@ -100,6 +100,7 @@ export function useLayers(props) {
         OPACITY,
         brushingRadius: BRUSH_RADIUS,
         brushingEnabled: ENABLE_BRUSHING,
+        // Source and Target swapped deliberately
         getSourcePosition: (d) => d.target,
         getTargetPosition: (d) => d.source,
         getSourceColor: TARGET_COLOR,
