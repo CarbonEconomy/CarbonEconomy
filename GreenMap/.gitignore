@@ -1,3 +1,6 @@
+# temporary secrets store:
+./src/variables/tokens.js
+
 # Node artifact files
 node_modules/
 dist/
