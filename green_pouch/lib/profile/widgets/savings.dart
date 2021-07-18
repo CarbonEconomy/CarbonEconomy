@@ -2,10 +2,57 @@ import 'package:flutter/material.dart';
 
 import '../../my_colours.dart';
 
-class Savings extends StatelessWidget {
+class Savings extends StatefulWidget {
   int credits;
 
   Savings(this.credits);
+
+  @override
+  State<StatefulWidget> createState() => SavingsState();
+}
+
+class SavingsState extends State<Savings> with TickerProviderStateMixin {
+  int credits = 0;
+
+  late AnimationController controller;
+  late Animation<int> creditsAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
+    creditsAnimation =
+        IntTween(begin: (widget.credits ~/ 100) * 100, end: widget.credits)
+            .animate(controller)
+              ..addListener(() {
+                setState(() {});
+              });
+    controller.forward();
+    updateCredits();
+  }
+
+  @override
+  void didUpdateWidget(Savings oldWidget) {
+    if (oldWidget.credits != widget.credits) {
+      controller.reset();
+
+      creditsAnimation = IntTween(begin: oldWidget.credits, end: widget.credits)
+          .animate(controller)
+            ..addListener(() {
+              setState(() {});
+            });
+      controller.forward();
+
+      updateCredits();
+    }
+  }
+
+  void updateCredits() {
+    setState(() {
+      credits = widget.credits;
+    });
+  }
 
   ImageProvider<Object> buildImage(int progress) {
     if (progress <= 33) {
@@ -15,6 +62,12 @@ class Savings extends StatelessWidget {
     }
 
     return AssetImage("graphics/big.png");
+  }
+
+  @override
+  void dispose() {
+    controller.stop();
+    super.dispose();
   }
 
   @override
@@ -33,14 +86,18 @@ class Savings extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 1000),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(child: child, opacity: animation);
+          },
           child: Container(
+            key: ValueKey<int>(credits),
             height: 240,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.fitHeight,
-                image: buildImage(progress),
+                image: buildImage(credits % 100),
               ),
             ),
           ),
@@ -61,7 +118,7 @@ class Savings extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width * 0.7,
               child: LinearProgressIndicator(
-                value: progress.toDouble() / 100,
+                value: (creditsAnimation.value % 100) / 100,
                 backgroundColor: MyColours.PRIMARY.withOpacity(0.24),
               ),
             ),
