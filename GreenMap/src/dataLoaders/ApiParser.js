@@ -39,7 +39,6 @@ const parseApiData = (transactions) => {
                 locations[endPoint].inFlow = 0;
             }
 
-
             // accumulate if exists:
             if (locations[startPoint].outFlows[endPoint]) {
                 locations[startPoint].outFlows[endPoint] += amount;
@@ -47,10 +46,10 @@ const parseApiData = (transactions) => {
                 locations[startPoint].outFlows[endPoint] = amount;
             }
 
-            locations[endPoint].inFlow -= amount;
+            locations[endPoint].inFlow += amount;
         }
     });
-    console.log(">>> after parsing, locations:", locations)
+    console.log(">>> after parsing, locations:", locations);
     return locations;
 };
 

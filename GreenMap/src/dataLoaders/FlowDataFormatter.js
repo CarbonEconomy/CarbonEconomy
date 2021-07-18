@@ -11,11 +11,11 @@ function getArcLayerProps(formattedData) {
 
     Object.keys(formattedData).forEach((sourcePoint) => {
         const { inFlow, outFlows, location } = formattedData[sourcePoint];
-        const value = { gain: 0, loss: inFlow };
+        const value = { gain: inFlow, loss: 0 };
 
         // create source points and arcs:
         Object.keys(outFlows).forEach((targetPoint) => {
-            value.gain += outFlows[targetPoint];
+            value.loss += outFlows[targetPoint];
 
             // add point at arc source
             sources.push({
@@ -37,7 +37,7 @@ function getArcLayerProps(formattedData) {
         targets.push({
             ...value,
             position: location,
-            net: value.gain + value.loss,
+            net: value.gain - value.loss,
             name: sourcePoint,
         });
     });
