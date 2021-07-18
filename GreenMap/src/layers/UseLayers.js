@@ -24,15 +24,15 @@ const ENABLE_BRUSHING = true;
 const HEXAGON_RADIUS = 20
 const HEXAGON_ELEVATION_SCALE = 2
 
-const brushingExtension = new BrushingExtension();
-
 // todo: how to convert this into a custom react hook so that useMemo() can be used to reduce load time?
-export function renderLayers(props) {
+export function useLayers(props) {
     const {transactionsFlow} = props;
+    const {arcs, targets, sources} = useMemo(() => getArcLayerProps(transactionsFlow), transactionsFlow)
+    if(!transactionsFlow) return null
     // const {arcs, targets, sources} = useMemo(() => getArcLayerProps(transactionsFlow), [transactionsFlow]) // todo: see todo above
-    const {arcs, targets, sources} = getArcLayerProps(transactionsFlow)
     console.log("transactionsFlow to be used for rendering layers", transactionsFlow)
     const transactionEntries = Object.entries(transactionsFlow)
+    const brushingExtension = new BrushingExtension();
 
     const hexagonLayer = transactionsFlow
         && new HexagonLayer({

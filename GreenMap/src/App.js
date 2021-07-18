@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {renderLayers} from "./layers/RenderLayers";
+import {useLayers} from "./layers/UseLayers";
 import {INITIAL_VIEWPORT} from "./utils/MapUtils/Viewports";
 import {fetchTransactionsFlow} from "./dataLoaders/LocationsLoader"
 import MapContent from "./pages/MapContent";
@@ -36,15 +36,16 @@ const App = () => {
     }, []);
 
 
+    const layers = useLayers({
+        transactionsFlow: transactionsFlow,
+    })
     return (
         <div className="App">
             {(transactionsFlow === null)
                 ? <p> loading spinner ... </p>
                 : <MapContent
                     viewport={viewport}
-                    layers={renderLayers({
-                        transactionsFlow: transactionsFlow,
-                    })}/>
+                    layers={layers}/>
             }
         </div>
     );
