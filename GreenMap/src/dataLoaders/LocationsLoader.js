@@ -1,11 +1,9 @@
-import parseApiData from "./ApiParser";
 import { generateRandomTransactions } from "../utils/MockDataUtils/MockData";
 import singaporeLocations from "./SingaporeLocations.json";
 
-export async function fetchTransactionsFlow() {
+export async function fetchTransactions() {
   const data = singaporeLocations.map((d) => {
     return { position: [+d.lng, +d.lat] };
   });
-  const transactions = await generateRandomTransactions(data, 1000);
-  return parseApiData(transactions);
+  return await generateRandomTransactions(data, 1000);
 }
