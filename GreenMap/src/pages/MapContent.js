@@ -10,15 +10,14 @@ function MapContent(props) {
   const { viewport, layers } = props;
   console.log("== layers:", layers);
 
-  function getTooltip({ object }) {
-    console.log("...getTooltip invoked");
-    return (
-      object &&
-      `\
-            ${object.name}
-            Net gain: ${object.net}`
-    );
-  }
+  const getTooltip = ({ object }) =>
+    object && {
+      html: `<h3>${object.name}</h3><h3>Net gain: ${object.net}</h3>`,
+      style: {
+        // background: 'linear-gradient(to right, orange , yellow, green, cyan, blue, violet)',
+        fontSize: '0.8em'
+      }
+    };
 
   window.setInterval(
     () =>
@@ -33,7 +32,7 @@ function MapContent(props) {
       layers={layers}
       controller={{ type: MapController, dragRotate: true }}
       initialViewState={viewport}
-      getTootip={getTooltip}
+      getTooltip={getTooltip}
     >
       <StaticMap
         mapStyle="mapbox://styles/mapbox/dark-v10"
