@@ -24,8 +24,6 @@ function createTransaction(fromID, toID, amount, description) {
 const getRandomPoint = async (data) => {
     let points = data
     let point = points[Math.floor(Math.random() * points.length)]
-    console.log(">>> getRandomPoint input data param:", data)
-    console.log(">>> getRandomPoint point object:", point)
     if(!point || !point.position) throw Error("we messed up somewhere")
     return point.position
 }
