@@ -45,7 +45,7 @@ export function useLayers(props) {
     transactionsFlow &&
     new HexagonLayer({
       id: "hexagon-layer",
-      data: transactionEntries,
+      data: transactionEntries.filter(x => x[1].inFlow !== 0),
       colorRange,
       radius: HEXAGON_RADIUS,
       extruded: true,
