@@ -7,6 +7,7 @@ import LoadingPage from "./pages/LoadingPage";
 import TransactionNotification from "./components/TransactionNotification"
 import toast, {Toaster} from "react-hot-toast";
 import parseApiData from "./dataLoaders/ApiParser";
+import TopMenu from "./layouts/TopMenu";
 
 const App = () => {
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
@@ -74,6 +75,7 @@ const App = () => {
 
     const loadedDisplay = (
         <>
+            <TopMenu style={{zIndex:'100', position:"top-right"}}/>
             <MapContent viewport={viewport} layers={layers}/>
         </>
     );
