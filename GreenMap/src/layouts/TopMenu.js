@@ -79,11 +79,7 @@ export default function TopMenu() {
     >
       <DialogTitle id="scroll-dialog-title">
         GreenMap{" "}
-        <Button
-          className={classes.closeButton}
-          onClick={handleClose}
-          color="primary"
-        >
+        <Button className={classes.closeButton} onClick={handleClose}>
           <CloseIcon />
         </Button>
       </DialogTitle>
