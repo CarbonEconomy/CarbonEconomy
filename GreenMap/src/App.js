@@ -1,62 +1,93 @@
-import React, { useEffect, useState } from "react";
-import { useLayers } from "./layers/UseLayers";
-import { INITIAL_VIEWPORT_CBD } from "./utils/MapUtils/Viewports";
-import { fetchTransactionsFlow } from "./dataLoaders/LocationsLoader";
+import React, {useEffect, useState} from "react";
+import {useLayers} from "./layers/UseLayers";
+import {createViewport, INITIAL_VIEWPORT_CBD} from "./utils/MapUtils/Viewports";
+import {fetchTransactions} from "./dataLoaders/LocationsLoader";
 import MapContent from "./pages/MapContent";
 import LoadingPage from "./pages/LoadingPage";
-import Button from "@material-ui/core/Button";
-import toast, { Toaster } from "react-hot-toast";
+import TransactionNotification from "./components/TransactionNotification"
+import toast, {Toaster} from "react-hot-toast";
+import parseApiData from "./dataLoaders/ApiParser";
 
 const App = () => {
-  const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
-  const [transactionsFlow, setTransactionsFlow] = useState(null);
+    const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
+    const [transactions, setTransactions] = useState([]);
+    const [transactionsFlow, setTransactionsFlow] = useState(null);
 
-  const handleResize = () => {
-    setViewport((v) => {
-      return {
-        ...v,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
+    const handleResize = () => {
+        setViewport((v) => {
+            return {
+                ...v,
+                width: window.innerWidth,
+                height: window.innerHeight,
+            };
+        });
+    };
+
+
+    const handleViewportChange = (targetLocation) => {
+        const updatedViewport = createViewport(targetLocation)
+        console.log(">> updatedViewport:", updatedViewport)
+        setViewport(updatedViewport)
+    }
+
+    async function fetchTransactionsData() {
+        await fetchTransactions()
+            .then(transactions => {
+                setTransactions(transactions)
+                setTransactionsFlow(parseApiData(transactions))
+            })
+    }
+
+    useEffect(() => {
+        fetchTransactionsData();
+    }, []);
+
+    //resize
+    useEffect(() => {
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const layers = useLayers({
+        transactionsFlow: transactionsFlow,
     });
-  };
 
-  async function fetchTransactionsFlowData() {
-    let mockTransactionsFlow = await fetchTransactionsFlow();
-    setTransactionsFlow(mockTransactionsFlow);
-  }
+    window.setInterval(
+        () => {
+            return transactions
+                ? toast.custom( <TransactionNotification onMouseEntryHandler={handleViewportChange}
+                    transaction={getRandomTransaction()}/>, {
+                    position:"top-left"
+                })
+                : null
+        }, 5000);
 
-  useEffect(() => {
-    fetchTransactionsFlowData();
-  }, []);
 
-  //resize
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    const getRandomTransaction = () => {
+        if (transactions == null) return {}
+        const randIdx = Math.floor(Math.random() * transactions.length)
+        const txn = transactions[randIdx]
+        console.log("random txn", txn)
+        return txn
+    }
 
-  const layers = useLayers({
-    transactionsFlow: transactionsFlow,
-  });
+    const loadedDisplay = (
+        <>
+            <MapContent viewport={viewport} layers={layers}/>
+        </>
+    );
 
-  const loadedDisplay = (
-    <>
-      <MapContent viewport={viewport} layers={layers} />
-    </>
-  );
-
-  return (
-    <div className="App">
-      <Toaster />
-      {transactionsFlow === null ? (
-        <LoadingPage message={"nice"} />
-      ) : (
-        loadedDisplay
-      )}
-    </div>
-  );
+    return (
+        <div className="App">
+            <Toaster/>
+            {transactionsFlow === null ? (
+                <LoadingPage message={"nice"}/>
+            ) : (
+                loadedDisplay
+            )}
+        </div>
+    );
 };
 
 export default App;
