@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 
 function displayTransaction(transaction) {
     if (!transaction) {
-        return  <Typography variant={"body1"}>
+        return <Typography variant={"body1"}>
             Towards a greener future
         </Typography>
     }
@@ -31,19 +31,23 @@ function displayTransaction(transaction) {
     const destinationLocation = description.end
     const mode = description.mode
     return <Typography variant={"body1"}>
-        <AddTwoToneIcon/> {amount}  <EcoTwoToneIcon/> {destinationLocation.lat}, {destinationLocation.lng} <br/>
+        <AddTwoToneIcon/> {amount} <EcoTwoToneIcon/> {destinationLocation.lat}, {destinationLocation.lng} <br/>
         for {mode}
     </Typography>
 }
 
 export default function TransactionNotification(props) {
     const classes = useStyles()
-    const {transaction} = props
-    return <Card className={classes.notif}>
+    const {transaction, onMouseEntryHandler} = props
+    return <Card onMouseEnter={() => transaction
+        ? onMouseEntryHandler(transaction.description.end)
+        : null}
+                 className={classes.notif}>
         {displayTransaction(transaction)}
     </Card>;
 }
 
 TransactionNotification.propTypes = {
-    transaction: PropTypes.object
+    transaction: PropTypes.object,
+    onMouseEntryHandler: PropTypes.func
 }

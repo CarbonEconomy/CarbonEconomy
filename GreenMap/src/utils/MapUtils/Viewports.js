@@ -32,3 +32,21 @@ export const INITIAL_VIEWPORT_CBD = {
   pitch: 65,
   bearing: 0,
 };
+
+
+export const createViewport = (targetLocation) => {
+  console.log(">> arg: ", targetLocation)
+  const lng = targetLocation.lng
+  const lat = targetLocation.lat
+
+   return {
+     width: window.innerWidth,
+     height:window.innerHeight,
+     longitude: lng,
+     latitude: lat,
+     zoom: 15,
+     maxZoom:26,
+     pitch: 65,
+     bearing: 0
+   }
+}

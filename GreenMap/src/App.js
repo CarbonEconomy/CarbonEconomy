@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useLayers} from "./layers/UseLayers";
-import {INITIAL_VIEWPORT_CBD} from "./utils/MapUtils/Viewports";
+import {createViewport, INITIAL_VIEWPORT_CBD} from "./utils/MapUtils/Viewports";
 import {fetchTransactions} from "./dataLoaders/LocationsLoader";
 import MapContent from "./pages/MapContent";
 import LoadingPage from "./pages/LoadingPage";
@@ -22,6 +22,13 @@ const App = () => {
             };
         });
     };
+
+
+    const handleViewportChange = (targetLocation) => {
+        const updatedViewport = createViewport(targetLocation)
+        console.log(">> updatedViewport:", updatedViewport)
+        setViewport(updatedViewport)
+    }
 
     async function fetchTransactionsData() {
         await fetchTransactions()
@@ -49,7 +56,7 @@ const App = () => {
     window.setInterval(
         () => {
             return transactions
-                ? toast.custom( <TransactionNotification width
+                ? toast.custom( <TransactionNotification onMouseEntryHandler={handleViewportChange}
                     transaction={getRandomTransaction()}/>, {
                     position:"top-left"
                 })
