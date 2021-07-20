@@ -24,6 +24,27 @@ const globalDeliveryEmissions = {
 const ORS_KEY = "5b3ce3597851110001cf624800c459b3b7a941b6a526cdf50abe85bd";
 const ORS_DRIVING_DISTANCE =
   "https://api.openrouteservice.org/v2/directions/driving-car";
+const ORS_REVERSE_GEOCODE = "https://api.openrouteservice.org/geocode/reverse";
+
+const getAddress = async (lat, lng) => {
+  if (!lat || !lng) {
+    return undefined;
+  }
+
+  const params = {
+    "api_key": ORS_KEY,
+    "point.lon": lng,
+    "point.lat": lat,
+  };
+
+  try {
+    const response = await axios.get(ORS_REVERSE_GEOCODE, { params: params });
+    const result = response.data?.features?.[0]?.properties?.label;
+    return result;
+  } catch (error) {
+    return undefined;
+  }
+}
 
 const checkValidLatLong = (lat, lng) => {
   const isLatitude = (num) => isFinite(num) && Math.abs(num) <= 90;
@@ -211,4 +232,5 @@ const getEmissions = async (body) => {
 
 module.exports = {
   getEmissions,
+  getAddress
 };
