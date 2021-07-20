@@ -51,9 +51,8 @@ export function useLayers(props) {
       extruded: true,
       elevationScale: HEXAGON_ELEVATION_SCALE,
       getPosition: (transactionEntry) => {
-        const locationString = transactionEntry[0];
-        const [lngString, latString] = locationString.split(",");
-        return [Number(lngString), Number(latString)];
+        const [lngString, latString] = transactionEntry[1].location;
+        return [lngString, latString];
       },
       // getElevationWeight & elevationAggregation strategy determine stack height:
       getElevationWeight: (transactionEntry) => {

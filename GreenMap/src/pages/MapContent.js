@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { Paper } from "@material-ui/core";
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_DEFAULT_PUBLIC_TOKEN;
-console.log("see me", MAPBOX_ACCESS_TOKEN);
 
 function MapContent(props) {
   const { viewport, layers } = props;
