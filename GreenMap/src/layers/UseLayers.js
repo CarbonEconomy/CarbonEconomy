@@ -86,7 +86,7 @@ export function useLayers(props) {
       return elevationVal;
     },
     colorRange: heatmapColorRange,
-    intensity: 1.5,
+    intensity: 3,
     radiusPixels: 100,
     aggregation: "MEAN",
   });

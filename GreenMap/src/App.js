@@ -15,12 +15,18 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core";
-import { display } from "@material-ui/system";
+import { borderColor, display } from "@material-ui/system";
 
 const useStyles = makeStyles({
+  checkbox: {
+    color: "white",
+    borderColor: "white",
+    margin: "0 !important"
+  },
   checkboxes: {
     display: "flex",
     flexDirection: "column",
+    color: "white"
   },
   container: {
     position: "absolute",
@@ -116,6 +122,7 @@ const App = () => {
             onChange={handleCheck}
             name="arcs"
             color="primary"
+            className={classes.checkbox}
           />
         }
         label="Arcs"
@@ -127,6 +134,7 @@ const App = () => {
             onChange={handleCheck}
             name="heatmap"
             color="primary"
+            className={classes.checkbox}
           />
         }
         label="Heatmap"
