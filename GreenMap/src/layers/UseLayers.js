@@ -37,7 +37,7 @@ const HEXAGON_ELEVATION_SCALE = 2;
 
 // todo: how to convert this into a custom react hook so that useMemo() can be used to reduce load time?
 export function useLayers(props) {
-  const { transactionsFlow, enabledArray } = props;
+  const { transactionsFlow, enabled } = props;
   const { arcs, targets, sources } = useMemo(
     () => getArcLayerProps(transactionsFlow),
     transactionsFlow
@@ -154,10 +154,13 @@ export function useLayers(props) {
     // sourcesLayer,
     targetsLayer,
     targetsRingLayer,
-    creditFlowsArcLayer,
   ]
 
-  if (enabledArray.includes("heatmap")) {
+  if (enabled.arcs) {
+    layers.push(creditFlowsArcLayer);
+  }
+
+  if (enabled.heatmap) {
     layers.push(heatmapLayer);
   }
 

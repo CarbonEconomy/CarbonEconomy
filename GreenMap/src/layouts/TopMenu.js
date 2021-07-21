@@ -11,10 +11,9 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles({
   container: {
-    zIndex: "1000",
+    flexShrink: 0,
   },
   icon: {
-    zIndex: "1000",
     backgroundColor: colors.pistachioGreen,
     margin: "2%",
     padding: "5%",
@@ -22,14 +21,12 @@ const useStyles = makeStyles({
   imageIcon: {
     width: "150px",
     height: "150px",
-    position: "absolute",
-    top: 0,
-    right: 0,
-    zIndex: 1000,
   },
   iconRoot: {
     textAlign: "center",
     position: "relative",
+    width: "150px",
+    height: "150px",
     zIndex: 1000,
   },
   closeButton: {
@@ -54,7 +51,7 @@ export default function TopMenu() {
   };
   const classes = useStyles();
   const imageDisplay = (
-    <Icon className={{ root: classes.iconRoot }} onClick={handleClickOpen}>
+    <Icon className={classes.iconRoot} onClick={handleClickOpen}>
       <img className={classes.imageIcon} src={CarbonEconomyLogo} alt="x" />
     </Icon>
   );
