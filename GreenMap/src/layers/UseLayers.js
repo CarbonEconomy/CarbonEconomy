@@ -3,6 +3,7 @@ import { ArcLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { BrushingExtension } from "@deck.gl/extensions";
 import getArcLayerProps from "../dataLoaders/FlowDataFormatter";
 import { useMemo } from "react";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 
 const colorRange = [
   [1, 152, 189],
@@ -11,6 +12,15 @@ const colorRange = [
   // [254, 237, 177],
   // [254, 173, 84],
   // [209, 55, 78]
+];
+
+const heatmapColorRange = [
+  [240, 249, 232],
+  [204, 235, 197],
+  [168, 221, 181],
+  [123, 204, 196],
+  [67, 162, 202],
+  [8, 104, 172],
 ];
 
 // transaction out
@@ -27,7 +37,7 @@ const HEXAGON_ELEVATION_SCALE = 2;
 
 // todo: how to convert this into a custom react hook so that useMemo() can be used to reduce load time?
 export function useLayers(props) {
-  const { transactionsFlow } = props;
+  const { transactionsFlow, enabledArray } = props;
   const { arcs, targets, sources } = useMemo(
     () => getArcLayerProps(transactionsFlow),
     transactionsFlow
@@ -45,7 +55,7 @@ export function useLayers(props) {
     transactionsFlow &&
     new HexagonLayer({
       id: "hexagon-layer",
-      data: transactionEntries.filter(x => x[1].inFlow !== 0),
+      data: transactionEntries.filter((x) => x[1].inFlow !== 0),
       colorRange,
       radius: HEXAGON_RADIUS,
       extruded: true,
@@ -62,6 +72,24 @@ export function useLayers(props) {
       },
       elevationAggregation: "SUM",
     });
+
+  const heatmapLayer = new HeatmapLayer({
+    id: "heatmapLayer",
+    data: transactionEntries,
+    getPosition: (transactionEntry) => {
+      const [lngString, latString] = transactionEntry[1].location;
+      return [lngString, latString];
+    },
+    getWeight: (transactionEntry) => {
+      const value = transactionEntry[1];
+      const elevationVal = Math.abs(value.inFlow); // todo: inflows should determine stack height
+      return elevationVal;
+    },
+    colorRange: heatmapColorRange,
+    intensity: 1.5,
+    radiusPixels: 100,
+    aggregation: "MEAN",
+  });
 
   // const sourcesLayer = sources && new ScatterplotLayer({
   //     id: "sources",
@@ -119,12 +147,19 @@ export function useLayers(props) {
       getTargetColor: SOURCE_COLOR,
       extensions: [brushingExtension],
     });
+  
 
-  return [
+  const layers = [
     hexagonLayer,
     // sourcesLayer,
     targetsLayer,
     targetsRingLayer,
     creditFlowsArcLayer,
-  ];
+  ]
+
+  if (enabledArray.includes("heatmap")) {
+    layers.push(heatmapLayer);
+  }
+
+  return layers;
 }

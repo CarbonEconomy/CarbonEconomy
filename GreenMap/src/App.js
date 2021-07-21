@@ -53,6 +53,7 @@ const App = () => {
 
   const layers = useLayers({
     transactionsFlow: transactionsFlow,
+    enabledArray: ["heatmap"]
   });
 
   window.setInterval(() => {
