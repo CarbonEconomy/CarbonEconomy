@@ -36,8 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.checkboxes {
-  z-index: 1002 !important;
-  position: absolute;
-}
