@@ -89,6 +89,7 @@ export function useLayers(props) {
     intensity: 3,
     radiusPixels: 100,
     aggregation: "MEAN",
+    visible: enabled.heatmap
   });
 
   // const sourcesLayer = sources && new ScatterplotLayer({
@@ -146,6 +147,7 @@ export function useLayers(props) {
       getSourceColor: TARGET_COLOR,
       getTargetColor: SOURCE_COLOR,
       extensions: [brushingExtension],
+      visible: enabled.arcs
     });
   
 
@@ -154,15 +156,9 @@ export function useLayers(props) {
     // sourcesLayer,
     targetsLayer,
     targetsRingLayer,
+    creditFlowsArcLayer,
+    heatmapLayer
   ]
-
-  if (enabled.arcs) {
-    layers.push(creditFlowsArcLayer);
-  }
-
-  if (enabled.heatmap) {
-    layers.push(heatmapLayer);
-  }
 
   return layers;
 }
