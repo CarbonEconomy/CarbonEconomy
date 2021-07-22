@@ -21,6 +21,7 @@ import FastForwardIcon from '@material-ui/icons/FastForward';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
 import PauseIcon from '@material-ui/icons/Pause';
 import "@fontsource/roboto";
+import './slider.css';
 
 const useStyles = makeStyles({
     checkbox: {
@@ -162,7 +163,6 @@ const App = () => {
             max={10}
             min={0}
             classes={classes.slider}
-            // todo: no idea how to make the track green colour
         />
         <PauseIcon/>
     </div>
