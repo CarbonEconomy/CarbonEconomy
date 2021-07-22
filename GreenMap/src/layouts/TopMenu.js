@@ -70,7 +70,7 @@ export default function TopMenu() {
     <Dialog
       open={open}
       onClose={handleClose}
-      scroll="paper"
+      scroll="body"
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
     >

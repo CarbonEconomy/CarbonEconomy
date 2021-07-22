@@ -19,6 +19,7 @@ import {borderColor, display} from "@material-ui/system";
 import {colors} from "./utils/Colors"
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
+import PauseIcon from '@material-ui/icons/Pause';
 
 const useStyles = makeStyles({
     checkbox: {
@@ -40,11 +41,12 @@ const useStyles = makeStyles({
         flexDirection: "column",
     },
     slider: {
-        position: "absolute",
+        position: "relative",
         zIndex: "2000 !important",
         height: 300,
         display: "flex",
         flexDirection: "column",
+        alignTracks: "center"
     },
 
 });
@@ -66,9 +68,7 @@ const App = () => {
 
 
     const handleNotificationSpeedSliderChange = (event, newValue) => {
-        console.log(">> slider interacted with... event:", event)
-        console.log(">> new value:", newValue)
-        const newTickPeriod = (11 - newValue) * 1000
+        const newTickPeriod = newValue === 0 ? newValue : (11 - newValue) * 1000
         setTickPeriod(newTickPeriod)
     }
 
@@ -107,44 +107,25 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const layers = useLayers({
+    const deckGlLayers = useLayers({
         transactionsFlow: transactionsFlow,
         enabled: state,
     });
 
+    // refs needed to avoid using values in setInterval closure:
     const transactionsRef = useRef(transactions)
     const tickPeriodRef = useRef(tickPeriod)
     transactionsRef.current = transactions
     tickPeriodRef.current = tickPeriod
 
-    // const displayTransactionToast = () => {
-    //     let interval = null
-    //     const tickPeriod = tickPeriodRef.current
-    //     if (tickPeriod !== 0) { // display if non-zero:
-    //         interval = setInterval(() => {
-    //             const currentTransactions = transactionsRef.current
-    //             currentTransactions
-    //                 ? toast.custom(<TransactionNotification
-    //                     onMouseEntryHandler={handleViewportChange}
-    //                     transaction={getRandomTransaction(currentTransactions)}
-    //                 />, {
-    //                     position: "top-left",
-    //                 }
-    //                 )
-    //                 : null;
-    //         }, tickPeriod)
-    //         return () => clearInterval(interval)
-    //     } else return null
-    //
-    // }
-
+    // change tick period for notifications:
     useEffect(() => {
         let interval = null
         const tickPeriod = tickPeriodRef.current
+        console.log(">> new interval period to set:", tickPeriod)
         if (tickPeriod !== 0) { // display if non-zero:
             interval = setInterval(() => {
                 const currentTransactions = transactionsRef.current
-                console.log(">> new interval period to set:", tickPeriod)
                 currentTransactions
                     ? toast.custom(<TransactionNotification
                         onMouseEntryHandler={handleViewportChange}
@@ -176,13 +157,13 @@ const App = () => {
         <Slider
             orientation="vertical"
             defaultValue={tickPeriod}
-            valueDisplay="on"
             onChange={handleNotificationSpeedSliderChange}
             max={10}
             min={0}
+            classes={classes.slider}
             // todo: no idea how to make the track green colour
         />
-        <FastRewindIcon/>
+        <PauseIcon/>
     </div>
 
     const checkboxes = (
@@ -224,7 +205,7 @@ const App = () => {
                 <TopMenu/>
                 {checkboxes}
             </div>
-            <MapContent viewport={viewport} layers={layers}/>
+            <MapContent viewport={viewport} layers={deckGlLayers}/>
         </>
     );
 
