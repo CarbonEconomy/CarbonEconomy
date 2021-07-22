@@ -20,6 +20,7 @@ import {colors} from "./utils/Colors"
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
 import PauseIcon from '@material-ui/icons/Pause';
+import "@fontsource/roboto";
 
 const useStyles = makeStyles({
     checkbox: {
