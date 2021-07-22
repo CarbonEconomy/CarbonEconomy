@@ -14,9 +14,11 @@ import TopMenu from "./layouts/TopMenu";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {makeStyles} from "@material-ui/core";
+import {Container, makeStyles, Slider, Typography} from "@material-ui/core";
 import {borderColor, display} from "@material-ui/system";
 import {colors} from "./utils/Colors"
+import FastForwardIcon from '@material-ui/icons/FastForward';
+import FastRewindIcon from '@material-ui/icons/FastRewind';
 
 const useStyles = makeStyles({
     checkbox: {
@@ -27,7 +29,7 @@ const useStyles = makeStyles({
     checkboxes: {
         display: "flex",
         flexDirection: "column",
-        color: "white"
+        color: colors.pistachioGreen,
     },
     container: {
         position: "absolute",
@@ -37,13 +39,21 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
     },
+    slider: {
+        position: "absolute",
+        zIndex: "2000 !important",
+        height: 300,
+        display: "flex",
+        flexDirection: "column",
+    },
+
 });
 
 const App = () => {
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
     const [transactions, setTransactions] = useState([]);
     const [transactionsFlow, setTransactionsFlow] = useState(null);
-    const [tickPeriod, setUpdateInterval] = useState(2000) // updating of toasts
+    const [tickPeriod, setTickPeriod] = useState(2000) // updating of toasts
     const [state, setState] = useState({
         heatmap: false,
         arcs: false,
@@ -53,6 +63,14 @@ const App = () => {
     const handleCheck = (event) => {
         setState({...state, [event.target.name]: event.target.checked});
     };
+
+
+    const handleNotificationSpeedSliderChange = (event, newValue) => {
+        console.log(">> slider interacted with... event:", event)
+        console.log(">> new value:", newValue)
+        const newTickPeriod = (11 - newValue) * 1000
+        setTickPeriod(newTickPeriod)
+    }
 
     const handleResize = () => {
         setViewport((v) => {
@@ -95,25 +113,52 @@ const App = () => {
     });
 
     const transactionsRef = useRef(transactions)
+    const tickPeriodRef = useRef(tickPeriod)
     transactionsRef.current = transactions
-    const displayTransactionToast = () => {
-        let interval = null
-        interval = setInterval(() => {
-            const currentTransactions = transactionsRef.current
-            currentTransactions
-                ? toast.custom(<TransactionNotification
-                    onMouseEntryHandler={handleViewportChange}
-                    transaction={getRandomTransaction(currentTransactions)}
-                />, {
-                    position: "top-left",
-                }
-                )
-                : null;
-        }, tickPeriod)
-        return () => clearInterval()
-    }
+    tickPeriodRef.current = tickPeriod
 
-    useEffect(() => displayTransactionToast() , [tickPeriod])
+    // const displayTransactionToast = () => {
+    //     let interval = null
+    //     const tickPeriod = tickPeriodRef.current
+    //     if (tickPeriod !== 0) { // display if non-zero:
+    //         interval = setInterval(() => {
+    //             const currentTransactions = transactionsRef.current
+    //             currentTransactions
+    //                 ? toast.custom(<TransactionNotification
+    //                     onMouseEntryHandler={handleViewportChange}
+    //                     transaction={getRandomTransaction(currentTransactions)}
+    //                 />, {
+    //                     position: "top-left",
+    //                 }
+    //                 )
+    //                 : null;
+    //         }, tickPeriod)
+    //         return () => clearInterval(interval)
+    //     } else return null
+    //
+    // }
+
+    useEffect(() => {
+        let interval = null
+        const tickPeriod = tickPeriodRef.current
+        if (tickPeriod !== 0) { // display if non-zero:
+            interval = setInterval(() => {
+                const currentTransactions = transactionsRef.current
+                console.log(">> new interval period to set:", tickPeriod)
+                currentTransactions
+                    ? toast.custom(<TransactionNotification
+                        onMouseEntryHandler={handleViewportChange}
+                        transaction={getRandomTransaction(currentTransactions)}
+                    />, {
+                        position: "top-left",
+                    }
+                    )
+                    : null;
+            }, tickPeriod)
+            return () => clearInterval(interval)
+        } else return null
+
+    }, [tickPeriod])
 
     const getRandomTransaction = (transactions) => {
         if (transactions == null) return {};
@@ -123,33 +168,54 @@ const App = () => {
         return txn;
     };
 
+    const notificationSpeedControlSlider = <div className={classes.slider}>
+        <Typography id="vertical-slider" gutterBottom alignJustify>
+            Notification <br/> Speed
+        </Typography>
+        <FastForwardIcon/>
+        <Slider
+            orientation="vertical"
+            defaultValue={tickPeriod}
+            valueDisplay="on"
+            onChange={handleNotificationSpeedSliderChange}
+            max={10}
+            min={0}
+            // todo: no idea how to make the track green colour
+        />
+        <FastRewindIcon/>
+    </div>
+
     const checkboxes = (
-        <FormGroup row className={classes.checkboxes}>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={state.arcs}
-                        onChange={handleCheck}
-                        name="arcs"
-                        color={colors.pistachioGreen}
-                        className={classes.checkbox}
-                    />
-                }
-                label="Arcs"
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={state.heatmap}
-                        onChange={handleCheck}
-                        name="heatmap"
-                        color={colors.pistachioGreen}
-                        className={classes.checkbox}
-                    />
-                }
-                label="Heatmap"
-            />
-        </FormGroup>
+        <Container row className={classes.checkboxes}>
+            <FormGroup row className={classes.checkboxes}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={state.arcs}
+                            onChange={handleCheck}
+                            name="arcs"
+                            color={colors.pistachioGreen}
+                            className={classes.checkbox}
+                        />
+                    }
+                    label="Arcs"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={state.heatmap}
+                            onChange={handleCheck}
+                            name="heatmap"
+                            color={colors.pistachioGreen}
+                            className={classes.checkbox}
+                        />
+                    }
+                    label="Heatmap"
+                />
+            </FormGroup>
+            {notificationSpeedControlSlider}
+        </Container>
+
     );
 
     const loadedDisplay = (
