@@ -14,6 +14,14 @@ const verifyTransactionFieldsPresent = (transaction) => {
   );
 };
 
+const getPointName = (point) => {
+  if (point.address) {
+    return point.address;
+  } else {
+    return `${point.lng},${point.lat}`;
+  }
+}
+
 // parses json transaction data into flow data representing flow of green credits:
 const parseApiData = (transactions) => {
   console.log("... from api, json for transactions:", transactions);
@@ -25,8 +33,8 @@ const parseApiData = (transactions) => {
       const { start, end } = transaction.description;
 
       // use these as keys for points:
-      const startPoint = `${start.lng},${start.lat}`;
-      const endPoint = `${end.lng},${end.lat}`;
+      const startPoint = getPointName(start);
+      const endPoint = getPointName(end);
 
       // add start location:
       if (!locations[startPoint]) {

@@ -4,6 +4,7 @@
  */
 
 const { getQldbDriver } = require("./ConnectToLedger");
+const { getAddress } = require("./Emissions");
 const tableName = "GreenTransaction";
 
 const insertDocument = async (txn, document) => {
@@ -39,6 +40,27 @@ const findAll = async (txn) => {
  */
 const createTransaction = async (fromID, toID, amount, description) => {
   let transaction;
+
+  let startAddress;
+  let endAddress;
+  const startAddressPromise = getAddress(
+    description?.start?.lat,
+    description?.start?.lng
+  ).then((x) => (startAddress = x));
+  const endAddressPromise = getAddress(
+    description?.end?.lat,
+    description?.end?.lng
+  ).then((x) => (endAddress = x));
+  await Promise.all([startAddressPromise, endAddressPromise]);
+
+  if (startAddress) {
+    description.start.address = startAddress;
+  }
+
+  if (endAddress) {
+    description.end.address = endAddress;
+  }
+
   // Get a QLDB Driver instance
   const qldbDriver = getQldbDriver();
   await qldbDriver.executeLambda(async (txn) => {
@@ -59,6 +81,8 @@ const createTransaction = async (fromID, toID, amount, description) => {
       transactionId: docId.toUpperCase(),
       fromID,
       toID,
+      amount,
+      description
     };
   });
   return transaction;
