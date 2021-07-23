@@ -15,43 +15,14 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import {Container, makeStyles, Slider, Typography} from "@material-ui/core";
-import {borderColor, display} from "@material-ui/system";
 import {colors} from "./utils/Colors"
 import FastForwardIcon from '@material-ui/icons/FastForward';
-import FastRewindIcon from '@material-ui/icons/FastRewind';
 import PauseIcon from '@material-ui/icons/Pause';
 import "@fontsource/roboto";
 import './slider.css';
+import AppStyles from "./AppStyles"
 
-const useStyles = makeStyles({
-    checkbox: {
-        color: "white",
-        borderColor: "white",
-        margin: "0 !important"
-    },
-    checkboxes: {
-        display: "flex",
-        flexDirection: "column",
-        color: colors.pistachioGreen,
-    },
-    container: {
-        position: "absolute",
-        zIndex: "2000 !important",
-        top: 0,
-        right: 0,
-        display: "flex",
-        flexDirection: "column",
-    },
-    slider: {
-        position: "relative",
-        zIndex: "2000 !important",
-        height: 300,
-        display: "flex",
-        flexDirection: "column",
-        alignTracks: "center"
-    },
-
-});
+const useStyles = makeStyles(AppStyles)
 
 const App = () => {
     const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);

@@ -8,12 +8,12 @@ import EcoTwoToneIcon from "@material-ui/icons/EcoTwoTone";
 import AddTwoToneIcon from "@material-ui/icons/AddTwoTone";
 
 const useStyles = makeStyles({
-  notif: {
+  notification: {
     background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
     width: "10em",
     border: 0,
     borderRadius: 3,
-    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
     color: "black",
     padding: "0 5px",
     alignItems: "top-left",
@@ -55,7 +55,7 @@ export default function TransactionNotification(props) {
       onMouseEnter={() =>
         transaction ? onMouseEntryHandler(transaction.description.end) : null
       }
-      className={classes.notif}
+      className={classes.notification}
     >
       {displayTransaction(transaction)}
     </Card>
