@@ -1,4 +1,5 @@
 import {colors} from "./utils/Colors";
+
 const AppStyles = {
     checkbox: {
         color: "white",
@@ -26,5 +27,25 @@ const AppStyles = {
         flexDirection: "column",
         alignTracks: "center"
     },
+    helpNotificationCard: {
+        background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
+        width: "auto",
+        border: 0,
+        borderRadius: 3,
+        boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
+        color: "black",
+        padding: "5px",
+        alignItems: "top-left",
+    },
+    helpNotificationContent: {
+        background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
+        position: "top-center",
+        duration: 1000
+    },
+    transactionNotificationToast: {
+        position: "top-left",
+    }
+
+
 }
 export default AppStyles

@@ -3,6 +3,7 @@ import {colors} from "./Colors";
 import CarbonEconomyLogo from "../layouts/CarbonEconomy.svg";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import React from "react";
+import MapIcon from '@material-ui/icons/Map';
 
 const ThemedTypography = withStyles({
     root: {
@@ -11,8 +12,14 @@ const ThemedTypography = withStyles({
 
 })(Typography)
 
+const GreenGithubIcon = withStyles({
+    root: {
+        color: colors.darkGreen
+    }
+})(GitHubIcon)
+
 export const dialogTitleContent = <ThemedTypography variant={"h1"}>
-    GreenMap
+    GreenMap <MapIcon fontSize={"inherit"}/>
 </ThemedTypography>
 
 const dialogText = (
@@ -58,7 +65,7 @@ const dialogText = (
         <br/>
 
         <ThemedTypography variant={"body1"}>
-            On the right, you will find some <b>interactive controls</b>.
+            On the right, you will find some <b>interactive controls:</b>.
             <ul>
                 <li>
                     Check the boxes you
@@ -69,6 +76,13 @@ const dialogText = (
                     have a control slider. Pause the notifications by sliding it all the way
                     to the bottom or quicken it if you so wish. This changes the period at
                     which we poll for newer transactions (this is a lie).
+                </li>
+            </ul>
+
+            <b>Map interactions:</b> <br/>
+            <ul>
+                <li>
+                    Try ctrl + click and drag to rotate the current view.
                 </li>
             </ul>
         </ThemedTypography>
@@ -105,7 +119,7 @@ const dialogText = (
             <img src={CarbonEconomyLogo} alt={"CarbonEconomyLogo"}/>
             <ThemedTypography variant={"body2"}>
                 <Link href={"https://github.com/CarbonEconomy/CarbonEconomy"}>
-                    <GitHubIcon fontSize={"large"}/>
+                    <GreenGithubIcon fontSize={"large"}/>
                 </Link>
             </ThemedTypography>
 
