@@ -1,5 +1,6 @@
- ![CarbonEconomyLogo](./resources/CarbonEconomy.svg)
-
+<div align="center">
+    <img src="./resources/CarbonEconomy.svg" alt="CarbonEconomyLogo" />
+</div>
 ***Welcome to CarbonEconomy.***
 
 This is a monorepo that contains the following applications:
