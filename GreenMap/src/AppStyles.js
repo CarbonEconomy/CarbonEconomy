@@ -44,7 +44,11 @@ const AppStyles = {
     },
     transactionNotificationToast: {
         position: "top-left",
+    },
+    addressInput: {
+        position: "bottom"
     }
+
 
 
 }
