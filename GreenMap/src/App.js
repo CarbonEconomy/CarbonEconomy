@@ -14,7 +14,7 @@ import TopMenu from "./layouts/TopMenu";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {Card, Container, makeStyles, Slider, TextField, Typography} from "@material-ui/core";
+import {Card, Container, makeStyles, Slider, TextField, Typography, withStyles} from "@material-ui/core";
 import {colors} from "./utils/Colors"
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -29,6 +29,23 @@ const useStyles = makeStyles(AppStyles)
 Geocode.setApiKey(process.env.REACT_APP_GOOGLE_API_TOKEN);
 Geocode.setLanguage("en");
 Geocode.setRegion("sg");
+
+const InputTextField = withStyles({
+    root:{
+        position: "absolute",
+        zIndex: "100000",
+        top:"2.5%",
+        left:"35%",
+        width: "30em",
+        justifySelf:"center",
+        backgroundColor: "white",
+        border: 0,
+        borderRadius: 3,
+        boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
+        color: `${colors.darkGreen}`,
+        padding: "0 5px",
+    }
+})(TextField)
 
 
 const App = () => {
@@ -180,22 +197,32 @@ const App = () => {
         );
 
         const handleAddressInput = async (addressInput) => {
+            if(!addressInput || addressInput === " ") return
             const newLocation = await fetchGeocode(addressInput)
             console.log(">>> new location based on input:", newLocation)
             handleViewportChange(newLocation)
         }
 
-        const addressInput = <TextField
-            className={classes.addressInput}
-            placeholder={"Where do you wanna fly to?"}
+        const addressInput = <InputTextField
+            variant="filled"
+            // className={classes.addressInput}
+            placeholder={"Enter a location here or click the logo for help 😊"}
             onBlur={async (e) => {
                 const addressInput = e.target.value
                 console.log(">>> input field:", addressInput)
                 await handleAddressInput(addressInput)
             }}
+            onKeyPress={async (e) => {
+                if(e.key === "enter") {
+                    console.log(">> pressed enter!")
+                    const addressInput = e.target.value
+                    console.log(">>> input field:", addressInput)
+                    await handleAddressInput(addressInput)
+                }
+            }}
         >
 
-        </TextField>
+        </InputTextField>
 
         const loadedDisplay = (
             <>
@@ -210,6 +237,7 @@ const App = () => {
 
 
         const fetchGeocode = (inputAdress) => {
+            if (!inputAdress) return
             return Geocode.fromAddress(inputAdress).then(
                 (response) => {
                     console.log("++ response from gmaps api:", response)
@@ -227,28 +255,6 @@ const App = () => {
         useEffect(() => {
             fetchGeocode("Block 354 Kang Ching Road")
         }, [])
-
-
-        useEffect(() => {
-                const toastId = toast.custom((t) => {
-                        return <Card
-                            className={classes.helpNotificationCard}
-                            onClick={() => {
-                                toast.dismiss(toastId)
-                            }}
-                        >
-                            <Typography variant={"body1"}>
-                                For help, click the logo
-                            </Typography>
-                        </Card>
-                    }
-                    , classes.helpNotificationContent
-                )
-                setTimeout(() => {
-                    toast.dismiss(toastId)
-                }, 1000)
-            }
-            , [])
 
         return (
             <div className="App">

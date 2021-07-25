@@ -36,6 +36,7 @@ const AppStyles = {
         color: "black",
         padding: "5px",
         alignItems: "top-left",
+        zIndex:"10000"
     },
     helpNotificationContent: {
         background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
@@ -47,6 +48,21 @@ const AppStyles = {
     },
     addressInput: {
         position: "bottom"
+    },
+    inputTextFieldStyle: {
+        root:{
+            position: "absolute",
+            zIndex: "100000",
+            top:"2.5%",
+            left:"45%",
+            width: "fit-content",
+            backgroundColor: "white",
+            border: 0,
+            borderRadius: 3,
+            boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
+            color: `${colors.darkGreen}`,
+            padding: "0 5px",
+        }
     }
 
 
