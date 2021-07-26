@@ -14,15 +14,39 @@ import TopMenu from "./layouts/TopMenu";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {Card, Container, makeStyles, Slider, Typography} from "@material-ui/core";
+import {Card, Container, makeStyles, Slider, TextField, Typography, withStyles} from "@material-ui/core";
 import {colors} from "./utils/Colors"
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import PauseIcon from '@material-ui/icons/Pause';
 import "@fontsource/roboto";
 import './slider.css';
 import AppStyles from "./AppStyles"
+import Geocode from "react-geocode";
 
 const useStyles = makeStyles(AppStyles)
+
+// GMaps Geocode Configs:
+Geocode.setApiKey(process.env.REACT_APP_GOOGLE_API_TOKEN);
+Geocode.setLanguage("en");
+Geocode.setRegion("sg");
+
+const InputTextField = withStyles({
+    root: {
+        position: "absolute",
+        background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
+        zIndex: "6",
+        top: "85%",
+        left: "35%",
+        width: "30em",
+        justifySelf: "center",
+        border: 0,
+        borderRadius: 3,
+        boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
+        color: `${colors.darkGreen}`,
+        padding: "0 5px",
+    }
+})(TextField)
+
 
 const App = () => {
         const [viewport, setViewport] = useState(INITIAL_VIEWPORT_CBD);
@@ -33,6 +57,7 @@ const App = () => {
             heatmap: false,
             arcs: false,
         });
+        const [userAddressInput, setUserAddressInput] = useState(null)
         const classes = useStyles();
 
         const handleCheck = (event) => {
@@ -56,6 +81,7 @@ const App = () => {
         };
 
         const handleViewportChange = (targetLocation) => {
+            console.log("+++ targetLocation:", targetLocation)
             const updatedViewport = createViewport(targetLocation);
             console.log(">> updatedViewport:", updatedViewport);
             setViewport(updatedViewport);
@@ -170,6 +196,34 @@ const App = () => {
 
         );
 
+        const handleAddressInput = async (addressInput) => {
+            if (!addressInput || addressInput === " ") return
+            const newLocation = await fetchGeocode(addressInput)
+            console.log(">>> new location based on input:", newLocation)
+            handleViewportChange(newLocation)
+        }
+
+        const addressInput = <Typography>
+            <InputTextField
+                variant="outlined"
+                placeholder={"Enter a location or click the CarbonEconomy logo for help 😊"}
+                onBlur={async (e) => {
+                    const addressInput = e.target.value
+                    console.log(">>> input field:", addressInput)
+                    await handleAddressInput(addressInput)
+                }}
+                onKeyPress={async (e) => {
+                    if (e.key === "enter") {
+                        console.log(">> pressed enter!")
+                        const addressInput = e.target.value
+                        console.log(">>> input field:", addressInput)
+                        await handleAddressInput(addressInput)
+                    }
+                }}
+            >
+            </InputTextField>
+        </Typography>
+
         const loadedDisplay = (
             <>
                 <div className={classes.container}>
@@ -177,38 +231,38 @@ const App = () => {
                     {checkboxes}
                 </div>
                 <MapContent viewport={viewport} layers={deckGlLayers}/>
+                {addressInput}
             </>
         );
 
+
+        const fetchGeocode = (inputAdress) => {
+            if (!inputAdress) return
+            return Geocode.fromAddress(inputAdress).then(
+                (response) => {
+                    console.log("++ response from gmaps api:", response)
+                    const location = response.results[0].geometry.location;
+                    console.log("found location:", location);
+                    return location
+                },
+                (error) => {
+                    console.error(error);
+                }
+            )
+        }
+
+        // testGmaps geocoding api:
         useEffect(() => {
-                const toastId = toast.custom((t) => {
-                        return <Card
-                            className={classes.helpNotificationCard}
-                            onClick={()=> {
-                                toast.dismiss(toastId)
-                            }}
-                        >
-                            <Typography variant={"body1"}>
-                                For help, click the logo
-                            </Typography>
-                        </Card>
-                    }
-                    , classes.helpNotificationContent
-                    )
-                setTimeout(() => {
-                    toast.dismiss(toastId)
-                }, 1000)
-            }
-            , [])
+            fetchGeocode("Block 354 Kang Ching Road")
+        }, [])
 
         return (
             <div className="App">
                 <Toaster/>
-                {transactionsFlow === null ? (
-                    <LoadingPage message={"nice"}/>
-                ) : (
-                    loadedDisplay
-                )}
+                {transactionsFlow === null
+                    ? (<LoadingPage message={"nice"}/>)
+                    : (loadedDisplay)
+                }
             </div>
         );
     }

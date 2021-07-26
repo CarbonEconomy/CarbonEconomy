@@ -42,6 +42,7 @@ export default function TopMenu() {
 
   const dialog = (
     <Dialog
+        className={classes.helpDialog}
       open={open}
       onClose={handleClose}
       scroll="body"

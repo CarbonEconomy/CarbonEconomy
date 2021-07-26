@@ -12,9 +12,9 @@ const ThemedTypography = withStyles({
 
 })(Typography)
 
-const GreenGithubIcon = withStyles({
+const BlackGithubIcon = withStyles({
     root: {
-        color: colors.darkGreen
+        color: 'black'
     }
 })(GitHubIcon)
 
@@ -40,6 +40,10 @@ const dialogText = (
             people. <b>Every GreenCredit counts towards making us better GreenConsumers.</b>
             <br/>
             <ul>
+                <li>
+                    Want to go to a <b>particular place</b> on the map? <br/> Key in <b>any address in any format</b> and you will fly to that
+                    area.
+                </li>
                 <li>
                     Want to see which part of the island the transaction was made? <br/> Hover (or
                     tap if you are on your phone) and you will fly to that neighbourhood.
@@ -119,7 +123,7 @@ const dialogText = (
             <img src={CarbonEconomyLogo} alt={"CarbonEconomyLogo"}/>
             <ThemedTypography variant={"body2"}>
                 <Link href={"https://github.com/CarbonEconomy/CarbonEconomy"}>
-                    <GreenGithubIcon fontSize={"large"}/>
+                    <BlackGithubIcon fontSize={"large"}/>
                 </Link>
             </ThemedTypography>
 
