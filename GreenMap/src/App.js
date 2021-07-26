@@ -34,7 +34,7 @@ const InputTextField = withStyles({
     root: {
         position: "absolute",
         background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
-        zIndex: "100000",
+        zIndex: "6",
         top: "85%",
         left: "35%",
         width: "30em",
