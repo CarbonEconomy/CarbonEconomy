@@ -53,7 +53,7 @@ const AppStyles = {
         root:{
             position: "absolute",
             zIndex: "100000",
-            top:"2.5%",
+            top:"85%",
             left:"45%",
             width: "fit-content",
             backgroundColor: "white",

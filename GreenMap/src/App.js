@@ -203,7 +203,7 @@ const App = () => {
             handleViewportChange(newLocation)
         }
 
-        const addressInput = <Typography >
+        const addressInput = <Typography>
             <InputTextField
                 variant="outlined"
                 placeholder={"Enter a location or click the CarbonEconomy logo for help 😊"}
