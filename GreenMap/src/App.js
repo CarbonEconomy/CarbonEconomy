@@ -31,14 +31,14 @@ Geocode.setLanguage("en");
 Geocode.setRegion("sg");
 
 const InputTextField = withStyles({
-    root:{
+    root: {
         position: "absolute",
+        background: `linear-gradient(45deg, ${colors.pistachioGreen} 30%, ${colors.darkGreen} 90%)`,
         zIndex: "100000",
-        top:"2.5%",
-        left:"35%",
+        top: "85%",
+        left: "35%",
         width: "30em",
-        justifySelf:"center",
-        backgroundColor: "white",
+        justifySelf: "center",
         border: 0,
         borderRadius: 3,
         boxShadow: "0 3px 5px 2px rgba(0, 255, 0, .3)",
@@ -197,32 +197,32 @@ const App = () => {
         );
 
         const handleAddressInput = async (addressInput) => {
-            if(!addressInput || addressInput === " ") return
+            if (!addressInput || addressInput === " ") return
             const newLocation = await fetchGeocode(addressInput)
             console.log(">>> new location based on input:", newLocation)
             handleViewportChange(newLocation)
         }
 
-        const addressInput = <InputTextField
-            variant="filled"
-            // className={classes.addressInput}
-            placeholder={"Enter a location here or click the logo for help 😊"}
-            onBlur={async (e) => {
-                const addressInput = e.target.value
-                console.log(">>> input field:", addressInput)
-                await handleAddressInput(addressInput)
-            }}
-            onKeyPress={async (e) => {
-                if(e.key === "enter") {
-                    console.log(">> pressed enter!")
+        const addressInput = <Typography >
+            <InputTextField
+                variant="outlined"
+                placeholder={"Enter a location or click the CarbonEconomy logo for help 😊"}
+                onBlur={async (e) => {
                     const addressInput = e.target.value
                     console.log(">>> input field:", addressInput)
                     await handleAddressInput(addressInput)
-                }
-            }}
-        >
-
-        </InputTextField>
+                }}
+                onKeyPress={async (e) => {
+                    if (e.key === "enter") {
+                        console.log(">> pressed enter!")
+                        const addressInput = e.target.value
+                        console.log(">>> input field:", addressInput)
+                        await handleAddressInput(addressInput)
+                    }
+                }}
+            >
+            </InputTextField>
+        </Typography>
 
         const loadedDisplay = (
             <>
@@ -259,11 +259,10 @@ const App = () => {
         return (
             <div className="App">
                 <Toaster/>
-                {transactionsFlow === null ? (
-                    <LoadingPage message={"nice"}/>
-                ) : (
-                    loadedDisplay
-                )}
+                {transactionsFlow === null
+                    ? (<LoadingPage message={"nice"}/>)
+                    : (loadedDisplay)
+                }
             </div>
         );
     }
