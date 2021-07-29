@@ -3,17 +3,17 @@ const HttpError = require("../errors/HttpError");
 const haversine = require("haversine");
 
 // Estimated emissions in g CO2/km
-// Sources: 
+// Sources:
 // https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020
 // https://www.bikeradar.com/features/long-reads/cycling-environmental-impact/
 const localDeliveryEmissions = {
-  CAR:   185.92 ,
-  DIESEL_CAR:   164.53 ,
-  HYBRID_CAR:   105.67 ,
+  CAR: 185.92,
+  DIESEL_CAR: 164.53,
+  HYBRID_CAR: 105.67,
   ELECTRIC_CAR: 50.77,
   TRUCK: 500,
   VAN: 240.17,
-  BIKE:   98.16,
+  BIKE: 98.16,
   E_SCOOTER: 75,
   BICYCLE: 21,
   WALKER: 56,
@@ -35,7 +35,7 @@ const getAddress = async (lat, lng) => {
   }
 
   const params = {
-    "api_key": ORS_KEY,
+    api_key: ORS_KEY,
     "point.lon": lng,
     "point.lat": lat,
   };
@@ -47,7 +47,7 @@ const getAddress = async (lat, lng) => {
   } catch (error) {
     return undefined;
   }
-}
+};
 
 const checkValidLatLong = (lat, lng) => {
   const isLatitude = (num) => isFinite(num) && Math.abs(num) <= 90;
@@ -235,5 +235,5 @@ const getEmissions = async (body) => {
 
 module.exports = {
   getEmissions,
-  getAddress
+  getAddress,
 };
