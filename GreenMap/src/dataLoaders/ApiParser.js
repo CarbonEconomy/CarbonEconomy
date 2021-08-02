@@ -66,3 +66,4 @@ const parseApiData = (transactions) => {
 };
 
 export default parseApiData;
+export { verifyTransactionFieldsPresent };
