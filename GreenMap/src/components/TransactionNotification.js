@@ -21,6 +21,10 @@ const useStyles = makeStyles({
 });
 
 const getPointName = (point) => {
+    if (!point) {
+        return "unknown";
+    }
+
     if (point.address) {
         return point.address;
     } else {
@@ -32,9 +36,10 @@ function displayTransaction(transaction) {
     if (!transaction) {
         return <Typography variant={"body1"}>Towards a greener future</Typography>;
     }
+    console.log(transaction);
     const amount = transaction.amount;
     const description = transaction.description;
-    const destinationLocation = getPointName(description.end);
+    const destinationLocation = getPointName(description?.end);
     const mode = description.mode;
     return (
         <Typography variant={"body1"}>
