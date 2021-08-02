@@ -42,31 +42,14 @@ const heatmapColorRange = [
     [8, 104, 172],
 ];
 
-
-const heatmapColorRange_green = [
-    '#edf8fb',
-    '#ccece6',
-    '#99d8c9',
-    '#66c2a4',
-    '#2ca25f',
-    '#006d2c']
-
-
-// const heatmapColorRange_greenScheme = [
-//     ['rgb(237,248,251)',
-//         'rgb(204,236,230)',
-//         'rgb(153,216,201)',
-//         'rgb(102,194,164)',
-//         'rgb(44,162,95)',
-//         'rgb(0,109,44)']
-// ]
 const heatmapColorRange_greenScheme = [
-    [237, 248, 251],
-    [204, 236, 230],
-    [153, 216, 201],
+    [153, 216, 201, [0.8]],
     [102, 194, 164],
+    [65,174,118],
     [44, 162, 95],
-    [0, 109, 44]
+    [35,139,69],
+    [0, 109, 44],
+    [0, 68, 27]
 ]
 
 // transaction out
@@ -136,7 +119,8 @@ export function useLayers(props) {
         radiusPixels: 100,
         aggregation: "MEAN",
         visible: enabled.heatmap,
-        parameters: heatmapLayerParams
+        parameters: heatmapLayerParams,
+        threshold: 0.6,
     });
 
     // const sourcesLayer = sources && new ScatterplotLayer({
